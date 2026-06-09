@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Institucional · Sowell</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #1a3a5c; --navy-mid: #185FA5; --navy-light: #e8f0fe;
+      --green: #1D9E75; --green-light: #E1F5EE; --green-dark: #085041;
+      --blue-light: #E6F1FB; --blue-mid: #378ADD;
+      --amber: #EF9F27; --amber-light: #FAEEDA; --amber-dark: #633806;
+      --red: #E24B4A; --red-light: #FCEBEB;
+      --purple: #7F77DD; --purple-light: #EEEDFE;
+      --bg: #f4f6f9; --surface: #ffffff; --surface2: #f0f2f5;
+      --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
+      --text: #1a1a1a; --text2: #5a6070; --text3: #8a93a0;
+      --radius: 10px; --radius-lg: 14px;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* TOPBAR */
+    .topbar { background: var(--navy); height: 56px; display: flex; align-items: center; padding: 0 28px; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .logo-circle { width: 36px; height: 36px; border-radius: 50%; background: var(--navy-light); display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 13px; color: var(--navy); }
+    .school-name { color: #fff; font-size: 15px; font-weight: 500; }
+    .school-sub { color: rgba(255,255,255,0.55); font-size: 11px; }
+    .topbar-nav { display: flex; gap: 2px; }
+    .nav-item { color: rgba(255,255,255,0.7); font-size: 13px; padding: 6px 14px; border-radius: 8px; cursor: pointer; border: none; background: transparent; font-family: 'DM Sans', sans-serif; transition: background 0.15s; }
+    .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.16); color: #fff; }
+    .user-pill { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); border-radius: 20px; padding: 4px 12px 4px 5px; }
+    .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: #fff; }
+    .user-name { color: rgba(255,255,255,0.9); font-size: 12px; }
+
+    /* PÁGINAS */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* HERO */
+    .hero { background: linear-gradient(120deg, var(--navy) 0%, var(--navy-mid) 100%); padding: 32px 28px 28px; display: flex; align-items: center; justify-content: space-between; }
+    .hero-title { color: #fff; font-size: 22px; font-weight: 500; margin-bottom: 5px; }
+    .hero-sub { color: rgba(255,255,255,0.65); font-size: 13px; }
+    .hero-date { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius); padding: 10px 18px; text-align: center; }
+    .hero-date-day { color: #fff; font-size: 30px; font-weight: 500; font-family: 'DM Serif Display', serif; }
+    .hero-date-month { color: rgba(255,255,255,0.65); font-size: 12px; margin-top: 3px; }
+
+    /* LAYOUT */
+    .content { display: grid; grid-template-columns: 1fr 300px; gap: 18px; padding: 20px 28px 32px; max-width: 1100px; }
+    .section-title { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+    .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 14px; }
+
+    /* STATS */
+    .stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px 14px; text-align: center; }
+    .stat-num { font-size: 26px; font-weight: 500; color: var(--navy); font-family: 'DM Serif Display', serif; }
+    .stat-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+    /* AVISOS */
+    .notice-item { display: flex; gap: 12px; padding: 11px 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
+    .notice-item:last-child { border-bottom: none; }
+    .notice-dot { width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+    .notice-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+    .notice-meta { font-size: 11px; color: var(--text3); }
+    .badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
+
+    /* CURSOS */
+    .curso-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .curso-card { background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px 14px; cursor: pointer; text-decoration: none; display: block; transition: all 0.15s; }
+    .curso-card:hover { background: var(--surface); border-color: var(--border2); }
+    .curso-icon { font-size: 20px; color: var(--navy-mid); margin-bottom: 7px; }
+    .curso-label { font-size: 13px; font-weight: 500; color: var(--text); }
+    .curso-count { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+    /* CALENDARIO */
+    .calendar-days { display: flex; gap: 4px; margin-bottom: 12px; }
+    .cal-day { flex: 1; text-align: center; padding: 6px 2px; border-radius: var(--radius); }
+    .cal-day-name { font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+    .cal-day-num { font-size: 13px; color: var(--text); }
+    .cal-day.today { background: var(--navy); }
+    .cal-day.today .cal-day-num { color: #fff; font-weight: 500; }
+    .cal-day.today .cal-day-name { color: rgba(255,255,255,0.6); }
+    .cal-day.has-event .cal-day-num::after { content: ''; display: block; width: 4px; height: 4px; border-radius: 50%; background: var(--green); margin: 3px auto 0; }
+    .event-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
+    .event-item:last-child { border-bottom: none; }
+    .event-bar { width: 3px; border-radius: 2px; flex-shrink: 0; align-self: stretch; min-height: 30px; }
+    .event-title { font-size: 12px; font-weight: 500; color: var(--text); }
+    .event-time { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+    /* QUICK ACTIONS */
+    .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .qa-btn { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 12px; cursor: pointer; color: var(--text); font-size: 12px; font-weight: 500; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+    .qa-btn:hover { background: var(--surface); border-color: var(--border2); }
+    .qa-btn i { font-size: 18px; color: var(--navy-mid); }
+
+    /* MÓDULO ASISTENCIA */
+    .modulo-wrap { padding: 20px 28px 32px; }
+    .modulo-topbar { background: var(--navy); border-radius: var(--radius-lg); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .modulo-title { color: #fff; font-size: 15px; font-weight: 500; }
+    .modulo-sub { color: rgba(255,255,255,0.6); font-size: 12px; }
+    .controls-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .ctrl-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 14px; }
+    .ctrl-label { font-size: 11px; color: var(--text2); margin-bottom: 5px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .ctrl-card select { width: 100%; border: none; background: transparent; font-size: 13px; color: var(--text); font-family: 'DM Sans', sans-serif; outline: none; }
+    .stats-asistencia { display: grid; grid-template-columns: repeat(6,1fr); gap: 8px; margin-bottom: 14px; }
+    .stat-asis { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 8px 10px; text-align: center; }
+    .stat-asis-num { font-size: 20px; font-weight: 500; }
+    .stat-asis-lbl { font-size: 10px; color: var(--text3); margin-top: 2px; }
+    .legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text2); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+    .notif-banner { background: var(--green-light); border: 0.5px solid var(--green); border-radius: var(--radius); padding: 10px 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 12px; color: var(--green-dark); }
+    .lista-header { display: grid; grid-template-columns: 2fr 1fr repeat(6,40px); gap: 8px; padding: 6px 14px; margin-bottom: 4px; }
+    .lista-header span { font-size: 10px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; text-align: center; }
+    .lista-header span:first-child { text-align: left; }
+    .alumno-row { display: grid; grid-template-columns: 2fr 1fr repeat(6,40px); gap: 8px; align-items: center; padding: 8px 14px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; }
+    .alumno-name { font-size: 13px; font-weight: 500; }
+    .alumno-num { font-size: 11px; color: var(--text3); text-align: center; }
+    .estado-btn { width: 34px; height: 34px; border-radius: var(--radius); border: 0.5px solid var(--border); background: var(--surface2); cursor: pointer; font-size: 10px; font-weight: 500; color: var(--text3); display: flex; align-items: center; justify-content: center; font-family: 'DM Sans', sans-serif; transition: all 0.12s; }
+    .estado-btn.active-P { background: var(--green-light); border-color: var(--green); color: var(--green-dark); }
+    .estado-btn.active-A { background: var(--red-light); border-color: var(--red); color: #501313; }
+    .estado-btn.active-T { background: var(--amber-light); border-color: var(--amber); color: var(--amber-dark); }
+    .estado-btn.active-J { background: var(--blue-light); border-color: var(--blue-mid); color: #042C53; }
+    .estado-btn.active-R { background: var(--purple-light); border-color: var(--purple); color: #26215C; }
+    .estado-btn.active-AA { background: #FBEAF0; border-color: #D4537E; color: #4B1528; }
+    .modulo-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 0.5px solid var(--border); }
+    .modulo-footer-info { font-size: 12px; color: var(--text3); }
+    .btn-guardar { background: var(--navy); color: #fff; border: none; border-radius: var(--radius); padding: 10px 24px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+    .btn-guardar:hover { background: var(--navy-mid); }
+    .btn-guardar:disabled { opacity: 0.6; cursor: not-allowed; }
+    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--navy); color: #fff; padding: 12px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 500; display: none; z-index: 999; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .toast.ok { background: var(--green); }
+    .toast.error { background: var(--red); }
+
+    footer { text-align: center; padding: 24px; font-size: 11px; color: var(--text3); border-top: 0.5px solid var(--border); background: var(--surface); }
+    @media (max-width: 720px) {
+      .topbar-nav { display: none; }
+      .content { grid-template-columns: 1fr; padding: 16px; }
+      .hero { flex-direction: column; gap: 16px; padding: 24px 16px; }
+      .modulo-wrap { padding: 16px; }
+      .controls-grid { grid-template-columns: 1fr; }
+      .stats-asistencia { grid-template-columns: repeat(3,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="logo-circle">SW</div>
+    <div>
+      <div class="school-name">Sowell</div>
+      <div class="school-sub">Portal institucional · Secundaria</div>
+    </div>
+  </div>
+  <nav class="topbar-nav">
+    <button class="nav-item active" onclick="showPage('inicio',this)">Inicio</button>
+    <button class="nav-item" onclick="showPage('asistencia',this)">Asistencia</button>
+    <button class="nav-item" onclick="showPage('inicio',this)">Calificaciones</button>
+    <button class="nav-item" onclick="showPage('inicio',this)">Sanciones</button>
+    <button class="nav-item" onclick="showPage('inicio',this)">Comunicados</button>
+  </nav>
+  <div class="user-pill">
+    <div class="user-avatar">DR</div>
+    <span class="user-name">Director</span>
+  </div>
+</header>
+
+<!-- PÁGINA INICIO -->
+<div id="page-inicio" class="page active">
+  <section class="hero">
+    <div>
+      <h1 class="hero-title">Buenos días 👋</h1>
+      <p class="hero-sub">Ciclo lectivo 2026 · Secundaria · sowell.edu.ar</p>
+    </div>
+    <div class="hero-date">
+      <div class="hero-date-day" id="day"></div>
+      <div class="hero-date-month" id="monthYear"></div>
+    </div>
+  </section>
+
+  <main class="content">
+    <div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-num">18</div><div class="stat-label">cursos activos</div></div>
+        <div class="stat-card"><div class="stat-num">42</div><div class="stat-label">docentes</div></div>
+        <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">avisos nuevos</div></div>
+      </div>
+
+      <p class="section-title">Avisos recientes</p>
+      <div class="card">
+        <div class="notice-item">
+          <div class="notice-dot" style="background:var(--green)"></div>
+          <div>
+            <div class="notice-title">Acto del 25 de Mayo — detalles organizativos <span class="badge" style="background:var(--green-light);color:var(--green-dark)">Institucional</span></div>
+            <div class="notice-meta">Publicado hoy · Todos los cursos</div>
+          </div>
+        </div>
+        <div class="notice-item">
+          <div class="notice-dot" style="background:var(--blue-mid)"></div>
+          <div>
+            <div class="notice-title">Entrega de boletines del 1er cuatrimestre <span class="badge" style="background:var(--blue-light);color:#0C447C">Académico</span></div>
+            <div class="notice-meta">Ayer · 1°, 2° y 3° año</div>
+          </div>
+        </div>
+        <div class="notice-item">
+          <div class="notice-dot" style="background:var(--amber)"></div>
+          <div>
+            <div class="notice-title">Reunión de preceptores — sala de profesores <span class="badge" style="background:var(--amber-light);color:var(--amber-dark)">Interno</span></div>
+            <div class="notice-meta">Ayer · Personal docente</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="section-title">Acceso rápido por curso</p>
+      <div class="curso-grid">
+        <a href="https://classroom.google.com" target="_blank" rel="noopener" class="curso-card">
+          <div class="curso-icon"><i class="ti ti-school"></i></div>
+          <div class="curso-label">1° año</div><div class="curso-count">A, B (mañana) · C (tarde)</div>
+        </a>
+        <a href="https://classroom.google.com" target="_blank" rel="noopener" class="curso-card">
+          <div class="curso-icon"><i class="ti ti-school"></i></div>
+          <div class="curso-label">2° año</div><div class="curso-count">A, B (mañana) · C (tarde)</div>
+        </a>
+        <a href="https://classroom.google.com" target="_blank" rel="noopener" class="curso-card">
+          <div class="curso-icon"><i class="ti ti-school"></i></div>
+          <div class="curso-label">3° año</div><div class="curso-count">A, B (mañana) · C (tarde)</div>
+        </a>
+        <a href="https://classroom.google.com" target="_blank" rel="noopener" class="curso-card">
+          <div class="curso-icon"><i class="ti ti-school"></i></div>
+          <div class="curso-label">4°, 5° y 6° año</div><div class="curso-count">A, B (mañana) · C (tarde)</div>
+        </a>
+      </div>
+    </div>
+
+    <div>
+      <p class="section-title">Esta semana</p>
+      <div class="card">
+        <div class="calendar-days" id="cal-days"></div>
+        <div class="event-item">
+          <div class="event-bar" style="background:var(--green)"></div>
+          <div><div class="event-title">Reunión de personal</div><div class="event-time">Jue · 14:00 hs</div></div>
+        </div>
+        <div class="event-item">
+          <div class="event-bar" style="background:var(--blue-mid)"></div>
+          <div><div class="event-title">Entrega boletines 4°, 5° y 6°</div><div class="event-time">Vie · Todo el día</div></div>
+        </div>
+      </div>
+
+      <p class="section-title">Acciones rápidas</p>
+      <div class="quick-actions">
+        <button class="qa-btn" onclick="showPage('asistencia', document.querySelector('.nav-item:nth-child(2)'))"><i class="ti ti-clipboard-check"></i> Asistencia</button>
+        <button class="qa-btn"><i class="ti ti-speakerphone"></i> Comunicado</button>
+        <button class="qa-btn"><i class="ti ti-alert-triangle"></i> Sanción</button>
+        <button class="qa-btn"><i class="ti ti-file-text"></i> Documentos</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- PÁGINA ASISTENCIA -->
+<div id="page-asistencia" class="page">
+  <div class="modulo-wrap">
+    <div class="modulo-topbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <i class="ti ti-clipboard-check" style="color:#fff;font-size:20px"></i>
+        <div>
+          <div class="modulo-title">Toma de asistencia</div>
+          <div class="modulo-sub">Sowell · Secundaria</div>
+        </div>
+      </div>
+      <div class="user-pill">
+        <div class="user-avatar">DD</div>
+        <span class="user-name">David Depaoli</span>
+      </div>
+    </div>
+
+    <div class="controls-grid">
+      <div class="ctrl-card">
+        <div class="ctrl-label">Fecha</div>
+        <select id="sel-fecha"></select>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-label">Turno</div>
+        <select id="sel-turno"><option>Mañana</option><option>Tarde</option></select>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-label">Curso</div>
+        <select id="sel-curso">
+          <option>1° A</option><option>1° B</option><option>2° A</option>
+          <option>2° B</option><option>3° A</option><option>3° B</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="stats-asistencia">
+      <div class="stat-asis"><div class="stat-asis-num" style="color:var(--text)">28</div><div class="stat-asis-lbl">Total</div></div>
+      <div class="stat-asis"><div class="stat-asis-num" id="cnt-P" style="color:var(--green)">0</div><div class="stat-asis-lbl">Presentes</div></div>
+      <div class="stat-asis"><div class="stat-asis-num" id="cnt-A" style="color:var(--red)">0</div><div class="stat-asis-lbl">Ausentes</div></div>
+      <div class="stat-asis"><div class="stat-asis-num" id="cnt-T" style="color:var(--amber)">0</div><div class="stat-asis-lbl">Tarde</div></div>
+      <div class="stat-asis"><div class="stat-asis-num" id="cnt-J" style="color:var(--blue-mid)">0</div><div class="stat-asis-lbl">Justif.</div></div>
+      <div class="stat-asis"><div class="stat-asis-num" id="cnt-otros" style="color:var(--purple)">0</div><div class="stat-asis-lbl">Otros</div></div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>P — Presente</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>A — Ausente</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>T — Tarde</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue-mid)"></div>J — Justificado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>R — Retiro anticipado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#D4537E"></div>AA — Aus. administrativo</div>
+    </div>
+
+    <div class="notif-banner">
+      <i class="ti ti-mail-forward" style="font-size:18px;flex-shrink:0"></i>
+      Las familias de alumnos ausentes o con ausente administrativo recibirán una notificación automática por email al confirmar.
+    </div>
+
+    <div class="lista-header">
+      <span>Alumno</span><span>#</span>
+      <span>P</span><span>A</span><span>T</span><span>J</span><span>R</span><span>AA</span>
+    </div>
+    <div id="lista-alumnos"></div>
+
+    <div class="modulo-footer">
+      <div class="modulo-footer-info" id="footer-info">0 de 28 alumnos registrados</div>
+      <button class="btn-guardar" id="btn-guardar" onclick="guardarAsistencia()">
+        <i class="ti ti-device-floppy"></i> Confirmar y guardar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <p>© 2026 Sowell · <a href="mailto:info@sowell.edu.ar" style="color:var(--navy-mid);text-decoration:none">info@sowell.edu.ar</a> · portal.sowell.edu.ar</p>
+</footer>
+
+<script>
+  // ============================================================
+  // CONFIGURACIÓN — reemplazá con tu URL de Apps Script
+  // ============================================================
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4334x-UNxJ-LYgzo-yUuwu4-4R2TXiua5rqhRBul9zRmM7aAr58jF0NIeaV-GCIqg/exec';
+
+  // ============================================================
+  // NAVEGACIÓN
+  // ============================================================
+  function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
+  // ============================================================
+  // FECHA Y CALENDARIO
+  // ============================================================
+  const now = new Date();
+  document.getElementById('day').textContent = now.getDate();
+  document.getElementById('monthYear').textContent = now.toLocaleDateString('es-AR', { month: 'long' }) + ' ' + now.getFullYear();
+
+  // Selector de fecha
+  const selFecha = document.getElementById('sel-fecha');
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const opt = document.createElement('option');
+    opt.value = d.toISOString().split('T')[0];
+    opt.textContent = d.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+    if (i === 0) opt.selected = true;
+    selFecha.appendChild(opt);
+  }
+
+  // Calendario semanal
+  const dias = ['dom','lun','mar','mié','jue','vie','sáb'];
+  const calContainer = document.getElementById('cal-days');
+  for (let i = -2; i <= 2; i++) {
+    const d = new Date(); d.setDate(d.getDate() + i);
+    const div = document.createElement('div');
+    div.className = 'cal-day' + (i === 0 ? ' today' : '');
+    div.innerHTML = `<div class="cal-day-name">${dias[d.getDay()]}</div><div class="cal-day-num">${d.getDate()}</div>`;
+    calContainer.appendChild(div);
+  }
+
+  // ============================================================
+  // MÓDULO ASISTENCIA
+  // ============================================================
+  const alumnos = [
+    {id:'AL001',nombre:'Álvarez, Martín'},{id:'AL002',nombre:'Benítez, Sofía'},
+    {id:'AL003',nombre:'Castro, Tomás'},{id:'AL004',nombre:'Díaz, Valentina'},
+    {id:'AL005',nombre:'Fernández, Lucas'},{id:'AL006',nombre:'García, Camila'},
+    {id:'AL007',nombre:'González, Mateo'},{id:'AL008',nombre:'Herrera, Florencia'},
+    {id:'AL009',nombre:'Jiménez, Agustín'},{id:'AL010',nombre:'López, Lucía'},
+    {id:'AL011',nombre:'Martínez, Franco'},{id:'AL012',nombre:'Medina, Antonella'},
+    {id:'AL013',nombre:'Morales, Santiago'},{id:'AL014',nombre:'Muñoz, Julieta'},
+    {id:'AL015',nombre:'Navarro, Ignacio'},{id:'AL016',nombre:'Ortiz, Pilar'},
+    {id:'AL017',nombre:'Pérez, Nicolás'},{id:'AL018',nombre:'Ramírez, Abril'},
+    {id:'AL019',nombre:'Reyes, Joaquín'},{id:'AL020',nombre:'Ríos, Martina'},
+    {id:'AL021',nombre:'Rodríguez, Facundo'},{id:'AL022',nombre:'Romero, Catalina'},
+    {id:'AL023',nombre:'Ruiz, Sebastián'},{id:'AL024',nombre:'Sánchez, Delfina'},
+    {id:'AL025',nombre:'Silva, Emiliano'},{id:'AL026',nombre:'Torres, Milagros'},
+    {id:'AL027',nombre:'Vargas, Bautista'},{id:'AL028',nombre:'Vega, Renata'}
+  ];
+
+  const estados = ['P','A','T','J','R','AA'];
+  let registro = {};
+
+  function renderAsistencia() {
+    const cont = document.getElementById('lista-alumnos');
+    cont.innerHTML = '';
+    alumnos.forEach((al, i) => {
+      const row = document.createElement('div');
+      row.className = 'alumno-row';
+      row.innerHTML = `
+        <div class="alumno-name">${al.nombre}</div>
+        <div class="alumno-num">${String(i+1).padStart(2,'0')}</div>
+        ${estados.map(e => `
+          <button class="estado-btn ${registro[al.id]===e?'active-'+e:''}"
+            onclick="marcar('${al.id}','${e}')">${e}</button>
+        `).join('')}
+      `;
+      cont.appendChild(row);
+    });
+    actualizarStats();
+  }
+
+  function marcar(id, estado) {
+    registro[id] = registro[id] === estado ? null : estado;
+    renderAsistencia();
+  }
+
+  function actualizarStats() {
+    const vals = Object.values(registro).filter(Boolean);
+    document.getElementById('cnt-P').textContent = vals.filter(v=>v==='P').length;
+    document.getElementById('cnt-A').textContent = vals.filter(v=>v==='A').length;
+    document.getElementById('cnt-T').textContent = vals.filter(v=>v==='T').length;
+    document.getElementById('cnt-J').textContent = vals.filter(v=>v==='J').length;
+    document.getElementById('cnt-otros').textContent = vals.filter(v=>v==='R'||v==='AA').length;
+    document.getElementById('footer-info').textContent = `${vals.length} de ${alumnos.length} alumnos registrados`;
+  }
+
+  async function guardarAsistencia() {
+    const registrados = Object.values(registro).filter(Boolean).length;
+    if (registrados < alumnos.length) {
+      if (!confirm(`Hay ${alumnos.length - registrados} alumnos sin registrar. ¿Confirmar de todas formas?`)) return;
+    }
+
+    const btn = document.getElementById('btn-guardar');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ti ti-loader"></i> Guardando...';
+
+    const payload = {
+      accion: 'guardarAsistencia',
+      curso: document.getElementById('sel-curso').value,
+      fecha: document.getElementById('sel-fecha').value,
+      preceptor: 'David Depaoli',
+      alumnos: alumnos.map(al => ({
+        id_alumno: al.id,
+        estado: registro[al.id] || 'Sin registrar',
+        observacion: ''
+      }))
+    };
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      mostrarToast('Asistencia guardada correctamente ✓', 'ok');
+      registro = {};
+      renderAsistencia();
+    } catch (err) {
+      mostrarToast('Error al guardar. Revisá la conexión.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ti ti-device-floppy"></i> Confirmar y guardar';
+    }
+  }
+
+  function mostrarToast(msg, tipo) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + tipo;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 3500);
+  }
+
+  renderAsistencia();
+</script>
+</body>
+</html>
