@@ -23,8 +23,6 @@
       --radius: 10px; --radius-lg: 14px;
     }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-    /* TOPBAR */
     .topbar { background: var(--navy); height: 56px; display: flex; align-items: center; padding: 0 28px; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
     .topbar-left { display: flex; align-items: center; gap: 14px; }
     .logo-circle { width: 36px; height: 36px; border-radius: 50%; background: var(--navy-light); display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 13px; color: var(--navy); }
@@ -36,31 +34,21 @@
     .user-pill { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); border-radius: 20px; padding: 4px 12px 4px 5px; }
     .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: #fff; }
     .user-name { color: rgba(255,255,255,0.9); font-size: 12px; }
-
-    /* PÁGINAS */
     .page { display: none; }
     .page.active { display: block; }
-
-    /* HERO */
     .hero { background: linear-gradient(120deg, var(--navy) 0%, var(--navy-mid) 100%); padding: 32px 28px 28px; display: flex; align-items: center; justify-content: space-between; }
     .hero-title { color: #fff; font-size: 22px; font-weight: 500; margin-bottom: 5px; }
     .hero-sub { color: rgba(255,255,255,0.65); font-size: 13px; }
     .hero-date { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius); padding: 10px 18px; text-align: center; }
     .hero-date-day { color: #fff; font-size: 30px; font-weight: 500; font-family: 'DM Serif Display', serif; }
     .hero-date-month { color: rgba(255,255,255,0.65); font-size: 12px; margin-top: 3px; }
-
-    /* LAYOUT */
     .content { display: grid; grid-template-columns: 1fr 300px; gap: 18px; padding: 20px 28px 32px; max-width: 1100px; }
     .section-title { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
     .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 14px; }
-
-    /* STATS */
     .stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
     .stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px 14px; text-align: center; }
     .stat-num { font-size: 26px; font-weight: 500; color: var(--navy); font-family: 'DM Serif Display', serif; }
     .stat-label { font-size: 11px; color: var(--text2); margin-top: 2px; }
-
-    /* AVISOS */
     .notice-item { display: flex; gap: 12px; padding: 11px 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
     .notice-item:last-child { border-bottom: none; }
     .notice-dot { width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
@@ -68,15 +56,17 @@
     .notice-meta { font-size: 11px; color: var(--text3); }
     .badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
 
-    /* CURSOS */
-    .curso-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .curso-card { background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px 14px; cursor: pointer; text-decoration: none; display: block; transition: all 0.15s; }
-    .curso-card:hover { background: var(--surface); border-color: var(--border2); }
-    .curso-icon { font-size: 20px; color: var(--navy-mid); margin-bottom: 7px; }
-    .curso-label { font-size: 13px; font-weight: 500; color: var(--text); }
-    .curso-count { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    /* CURSOS POR AÑO */
+    .anio-section { margin-bottom: 14px; }
+    .anio-title { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .curso-chips-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .curso-chip { display: flex; align-items: center; gap: 6px; background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 8px 14px; text-decoration: none; transition: all 0.15s; }
+    .curso-chip:hover { background: var(--navy-light); border-color: var(--navy-mid); }
+    .curso-chip-label { font-size: 13px; font-weight: 500; color: var(--text); }
+    .curso-chip-turno { font-size: 10px; color: var(--text3); }
+    .turno-m { color: var(--amber-dark); background: var(--amber-light); padding: 1px 6px; border-radius: 6px; font-size: 10px; }
+    .turno-t { color: #26215C; background: var(--purple-light); padding: 1px 6px; border-radius: 6px; font-size: 10px; }
 
-    /* CALENDARIO */
     .calendar-days { display: flex; gap: 4px; margin-bottom: 12px; }
     .cal-day { flex: 1; text-align: center; padding: 6px 2px; border-radius: var(--radius); }
     .cal-day-name { font-size: 10px; color: var(--text3); margin-bottom: 4px; }
@@ -84,14 +74,11 @@
     .cal-day.today { background: var(--navy); }
     .cal-day.today .cal-day-num { color: #fff; font-weight: 500; }
     .cal-day.today .cal-day-name { color: rgba(255,255,255,0.6); }
-    .cal-day.has-event .cal-day-num::after { content: ''; display: block; width: 4px; height: 4px; border-radius: 50%; background: var(--green); margin: 3px auto 0; }
     .event-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
     .event-item:last-child { border-bottom: none; }
     .event-bar { width: 3px; border-radius: 2px; flex-shrink: 0; align-self: stretch; min-height: 30px; }
     .event-title { font-size: 12px; font-weight: 500; color: var(--text); }
     .event-time { font-size: 11px; color: var(--text3); margin-top: 2px; }
-
-    /* QUICK ACTIONS */
     .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .qa-btn { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 12px; cursor: pointer; color: var(--text); font-size: 12px; font-weight: 500; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
     .qa-btn:hover { background: var(--surface); border-color: var(--border2); }
@@ -135,7 +122,6 @@
     .toast { position: fixed; bottom: 24px; right: 24px; background: var(--navy); color: #fff; padding: 12px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 500; display: none; z-index: 999; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
     .toast.ok { background: var(--green); }
     .toast.error { background: var(--red); }
-
     footer { text-align: center; padding: 24px; font-size: 11px; color: var(--text3); border-top: 0.5px solid var(--border); background: var(--surface); }
     @media (max-width: 720px) {
       .topbar-nav { display: none; }
@@ -196,44 +182,76 @@
         <div class="notice-item">
           <div class="notice-dot" style="background:var(--green)"></div>
           <div>
-            <div class="notice-title">Acto del 25 de Mayo — detalles organizativos <span class="badge" style="background:var(--green-light);color:var(--green-dark)">Institucional</span></div>
-            <div class="notice-meta">Publicado hoy · Todos los cursos</div>
+            <div class="notice-title">Bienvenidos al portal institucional Sowell <span class="badge" style="background:var(--green-light);color:var(--green-dark)">Institucional</span></div>
+            <div class="notice-meta">Hoy · Todos los cursos</div>
           </div>
         </div>
         <div class="notice-item">
           <div class="notice-dot" style="background:var(--blue-mid)"></div>
           <div>
-            <div class="notice-title">Entrega de boletines del 1er cuatrimestre <span class="badge" style="background:var(--blue-light);color:#0C447C">Académico</span></div>
-            <div class="notice-meta">Ayer · 1°, 2° y 3° año</div>
-          </div>
-        </div>
-        <div class="notice-item">
-          <div class="notice-dot" style="background:var(--amber)"></div>
-          <div>
-            <div class="notice-title">Reunión de preceptores — sala de profesores <span class="badge" style="background:var(--amber-light);color:var(--amber-dark)">Interno</span></div>
-            <div class="notice-meta">Ayer · Personal docente</div>
+            <div class="notice-title">Módulo de asistencia disponible <span class="badge" style="background:var(--blue-light);color:#0C447C">Novedad</span></div>
+            <div class="notice-meta">Hoy · Preceptores</div>
           </div>
         </div>
       </div>
 
-      <p class="section-title">Acceso rápido por curso</p>
-      <div class="curso-grid">
-        <a href="https://classroom.google.com" target="_blank" rel="noopener" class="curso-card">
-          <div class="curso-icon"><i class="ti ti-school"></i></div>
-          <div class="curso-label">1° año</div><div class="curso-count">A, B (mañana) · C (tarde)</div>
-        </a>
-        <a href="https://classroom.google.com" target="_blank" rel="noopener" class="curso-card">
-          <div class="curso-icon"><i class="ti ti-school"></i></div>
-          <div class="curso-label">2° año</div><div class="curso-count">A, B (mañana) · C (tarde)</div>
-        </a>
-        <a href="https://classroom.google.com" target="_blank" rel="noopener" class="curso-card">
-          <div class="curso-icon"><i class="ti ti-school"></i></div>
-          <div class="curso-label">3° año</div><div class="curso-count">A, B (mañana) · C (tarde)</div>
-        </a>
-        <a href="https://classroom.google.com" target="_blank" rel="noopener" class="curso-card">
-          <div class="curso-icon"><i class="ti ti-school"></i></div>
-          <div class="curso-label">4°, 5° y 6° año</div><div class="curso-count">A, B (mañana) · C (tarde)</div>
-        </a>
+      <p class="section-title">Cursos del secundario</p>
+
+      <div class="card">
+        <!-- 1° año -->
+        <div class="anio-section">
+          <div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 1° año</div>
+          <div class="curso-chips-row">
+            <a href="https://classroom.google.com/c/Nzk4MTQwMDY0Nzk1" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">1° A</span><span class="turno-m">mañana</span></a>
+            <a href="https://classroom.google.com/c/Nzk4MTQwMDc0MTEw" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">1° B</span><span class="turno-m">mañana</span></a>
+            <a href="https://classroom.google.com/c/Nzk4MTM5NTEzMTcy" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">1° C</span><span class="turno-t">tarde</span></a>
+          </div>
+        </div>
+        <!-- 2° año -->
+        <div class="anio-section">
+          <div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 2° año</div>
+          <div class="curso-chips-row">
+            <a href="https://classroom.google.com/c/Nzk4MTM5NTMyNTQ4" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">2° A</span><span class="turno-m">mañana</span></a>
+            <a href="https://classroom.google.com/c/Nzk4MTQwMDEzOTgw" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">2° B</span><span class="turno-m">mañana</span></a>
+            <a href="https://classroom.google.com/c/Nzk4MTQwMTYxMTMz" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">2° C</span><span class="turno-t">tarde</span></a>
+          </div>
+        </div>
+        <!-- 3° año -->
+        <div class="anio-section">
+          <div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 3° año</div>
+          <div class="curso-chips-row">
+            <a href="https://classroom.google.com/c/Nzk4MTM5OTk3MDIz" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">3° A</span><span class="turno-m">mañana</span></a>
+            <a href="https://classroom.google.com/c/Nzk4MTQwMTk2NTY5" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">3° B</span><span class="turno-m">mañana</span></a>
+            <a href="https://classroom.google.com/c/Nzk4MTQwMjE5OTQ4" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">3° C</span><span class="turno-t">tarde</span></a>
+          </div>
+        </div>
+        <!-- 4° año -->
+        <div class="anio-section">
+          <div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 4° año</div>
+          <div class="curso-chips-row">
+            <a href="https://classroom.google.com/c/Nzk4MTQwMTc3MTU0" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">4° A</span><span class="turno-m">mañana</span></a>
+            <a href="https://classroom.google.com/c/Nzk4MTQwMTc5OTU5" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">4° B</span><span class="turno-m">mañana</span></a>
+            <a href="https://classroom.google.com/c/Nzk4MTQwMDcyNjQ5" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">4° C</span><span class="turno-t">tarde</span></a>
+          </div>
+        </div>
+        <!-- 5° año -->
+        <div class="anio-section">
+          <div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 5° año</div>
+          <div class="curso-chips-row">
+            <a href="https://classroom.google.com/c/Nzk4MTM5ODc5NDkx" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">5° A</span><span class="turno-m">mañana</span></a>
+            <a href="https://classroom.google.com/c/Nzk4MTQwMjMzMTkw" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">5° B</span><span class="turno-m">mañana</span></a>
+            <a href="https://classroom.google.com/c/Nzk4MTQwMzAxNjky" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">5° C</span><span class="turno-t">tarde</span></a>
+          </div>
+        </div>
+        <!-- 6° año -->
+        <div class="anio-section" style="margin-bottom:0">
+          <div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 6° año</div>
+          <div class="curso-chips-row">
+            <a href="https://classroom.google.com/c/Nzk4MTQwMTk0Njg4" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">6° A</span><span class="turno-m">mañana</span></a>
+            <a href="https://classroom.google.com/c/Nzk4MTQwMjQ2Mjkw" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">6° B</span><span class="turno-m">mañana</span></a>
+            <a href="https://classroom.google.com/c/Nzk4MTQwMjg2OTQy" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">6° C</span><span class="turno-t">tarde</span></a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -250,10 +268,9 @@
           <div><div class="event-title">Entrega boletines 4°, 5° y 6°</div><div class="event-time">Vie · Todo el día</div></div>
         </div>
       </div>
-
       <p class="section-title">Acciones rápidas</p>
       <div class="quick-actions">
-        <button class="qa-btn" onclick="showPage('asistencia', document.querySelector('.nav-item:nth-child(2)'))"><i class="ti ti-clipboard-check"></i> Asistencia</button>
+        <button class="qa-btn" onclick="showPage('asistencia',document.querySelectorAll('.nav-item')[1])"><i class="ti ti-clipboard-check"></i> Asistencia</button>
         <button class="qa-btn"><i class="ti ti-speakerphone"></i> Comunicado</button>
         <button class="qa-btn"><i class="ti ti-alert-triangle"></i> Sanción</button>
         <button class="qa-btn"><i class="ti ti-file-text"></i> Documentos</button>
@@ -278,34 +295,28 @@
         <span class="user-name">David Depaoli</span>
       </div>
     </div>
-
     <div class="controls-grid">
-      <div class="ctrl-card">
-        <div class="ctrl-label">Fecha</div>
-        <select id="sel-fecha"></select>
-      </div>
-      <div class="ctrl-card">
-        <div class="ctrl-label">Turno</div>
-        <select id="sel-turno"><option>Mañana</option><option>Tarde</option></select>
-      </div>
-      <div class="ctrl-card">
-        <div class="ctrl-label">Curso</div>
+      <div class="ctrl-card"><div class="ctrl-label">Fecha</div><select id="sel-fecha"></select></div>
+      <div class="ctrl-card"><div class="ctrl-label">Turno</div><select id="sel-turno"><option>Mañana</option><option>Tarde</option></select></div>
+      <div class="ctrl-card"><div class="ctrl-label">Curso</div>
         <select id="sel-curso">
-          <option>1° A</option><option>1° B</option><option>2° A</option>
-          <option>2° B</option><option>3° A</option><option>3° B</option>
+          <option>1° A</option><option>1° B</option><option>1° C</option>
+          <option>2° A</option><option>2° B</option><option>2° C</option>
+          <option>3° A</option><option>3° B</option><option>3° C</option>
+          <option>4° A</option><option>4° B</option><option>4° C</option>
+          <option>5° A</option><option>5° B</option><option>5° C</option>
+          <option>6° A</option><option>6° B</option><option>6° C</option>
         </select>
       </div>
     </div>
-
     <div class="stats-asistencia">
-      <div class="stat-asis"><div class="stat-asis-num" style="color:var(--text)">28</div><div class="stat-asis-lbl">Total</div></div>
+      <div class="stat-asis"><div class="stat-asis-num" style="color:var(--text)" id="cnt-total">0</div><div class="stat-asis-lbl">Total</div></div>
       <div class="stat-asis"><div class="stat-asis-num" id="cnt-P" style="color:var(--green)">0</div><div class="stat-asis-lbl">Presentes</div></div>
       <div class="stat-asis"><div class="stat-asis-num" id="cnt-A" style="color:var(--red)">0</div><div class="stat-asis-lbl">Ausentes</div></div>
       <div class="stat-asis"><div class="stat-asis-num" id="cnt-T" style="color:var(--amber)">0</div><div class="stat-asis-lbl">Tarde</div></div>
       <div class="stat-asis"><div class="stat-asis-num" id="cnt-J" style="color:var(--blue-mid)">0</div><div class="stat-asis-lbl">Justif.</div></div>
       <div class="stat-asis"><div class="stat-asis-num" id="cnt-otros" style="color:var(--purple)">0</div><div class="stat-asis-lbl">Otros</div></div>
     </div>
-
     <div class="legend">
       <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>P — Presente</div>
       <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>A — Ausente</div>
@@ -314,20 +325,17 @@
       <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>R — Retiro anticipado</div>
       <div class="legend-item"><div class="legend-dot" style="background:#D4537E"></div>AA — Aus. administrativo</div>
     </div>
-
     <div class="notif-banner">
       <i class="ti ti-mail-forward" style="font-size:18px;flex-shrink:0"></i>
       Las familias de alumnos ausentes o con ausente administrativo recibirán una notificación automática por email al confirmar.
     </div>
-
     <div class="lista-header">
       <span>Alumno</span><span>#</span>
       <span>P</span><span>A</span><span>T</span><span>J</span><span>R</span><span>AA</span>
     </div>
     <div id="lista-alumnos"></div>
-
     <div class="modulo-footer">
-      <div class="modulo-footer-info" id="footer-info">0 de 28 alumnos registrados</div>
+      <div class="modulo-footer-info" id="footer-info">0 alumnos registrados</div>
       <button class="btn-guardar" id="btn-guardar" onclick="guardarAsistencia()">
         <i class="ti ti-device-floppy"></i> Confirmar y guardar
       </button>
@@ -336,20 +344,11 @@
 </div>
 
 <div class="toast" id="toast"></div>
-
-<footer>
-  <p>© 2026 Sowell · <a href="mailto:info@sowell.edu.ar" style="color:var(--navy-mid);text-decoration:none">info@sowell.edu.ar</a> · portal.sowell.edu.ar</p>
-</footer>
+<footer><p>© 2026 Sowell · <a href="mailto:info@sowell.edu.ar" style="color:var(--navy-mid);text-decoration:none">info@sowell.edu.ar</a> · portal.sowell.edu.ar</p></footer>
 
 <script>
-  // ============================================================
-  // CONFIGURACIÓN — reemplazá con tu URL de Apps Script
-  // ============================================================
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4334x-UNxJ-LYgzo-yUuwu4-4R2TXiua5rqhRBul9zRmM7aAr58jF0NIeaV-GCIqg/exec';
 
-  // ============================================================
-  // NAVEGACIÓN
-  // ============================================================
   function showPage(id, btn) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -357,14 +356,10 @@
     if (btn) btn.classList.add('active');
   }
 
-  // ============================================================
-  // FECHA Y CALENDARIO
-  // ============================================================
   const now = new Date();
   document.getElementById('day').textContent = now.getDate();
   document.getElementById('monthYear').textContent = now.toLocaleDateString('es-AR', { month: 'long' }) + ' ' + now.getFullYear();
 
-  // Selector de fecha
   const selFecha = document.getElementById('sel-fecha');
   for (let i = 0; i < 7; i++) {
     const d = new Date(); d.setDate(d.getDate() - i);
@@ -375,7 +370,6 @@
     selFecha.appendChild(opt);
   }
 
-  // Calendario semanal
   const dias = ['dom','lun','mar','mié','jue','vie','sáb'];
   const calContainer = document.getElementById('cal-days');
   for (let i = -2; i <= 2; i++) {
@@ -386,9 +380,6 @@
     calContainer.appendChild(div);
   }
 
-  // ============================================================
-  // MÓDULO ASISTENCIA
-  // ============================================================
   const alumnos = [
     {id:'AL001',nombre:'Álvarez, Martín'},{id:'AL002',nombre:'Benítez, Sofía'},
     {id:'AL003',nombre:'Castro, Tomás'},{id:'AL004',nombre:'Díaz, Valentina'},
@@ -399,11 +390,7 @@
     {id:'AL013',nombre:'Morales, Santiago'},{id:'AL014',nombre:'Muñoz, Julieta'},
     {id:'AL015',nombre:'Navarro, Ignacio'},{id:'AL016',nombre:'Ortiz, Pilar'},
     {id:'AL017',nombre:'Pérez, Nicolás'},{id:'AL018',nombre:'Ramírez, Abril'},
-    {id:'AL019',nombre:'Reyes, Joaquín'},{id:'AL020',nombre:'Ríos, Martina'},
-    {id:'AL021',nombre:'Rodríguez, Facundo'},{id:'AL022',nombre:'Romero, Catalina'},
-    {id:'AL023',nombre:'Ruiz, Sebastián'},{id:'AL024',nombre:'Sánchez, Delfina'},
-    {id:'AL025',nombre:'Silva, Emiliano'},{id:'AL026',nombre:'Torres, Milagros'},
-    {id:'AL027',nombre:'Vargas, Bautista'},{id:'AL028',nombre:'Vega, Renata'}
+    {id:'AL019',nombre:'Reyes, Joaquín'},{id:'AL020',nombre:'Ríos, Martina'}
   ];
 
   const estados = ['P','A','T','J','R','AA'];
@@ -412,16 +399,14 @@
   function renderAsistencia() {
     const cont = document.getElementById('lista-alumnos');
     cont.innerHTML = '';
+    document.getElementById('cnt-total').textContent = alumnos.length;
     alumnos.forEach((al, i) => {
       const row = document.createElement('div');
       row.className = 'alumno-row';
       row.innerHTML = `
         <div class="alumno-name">${al.nombre}</div>
         <div class="alumno-num">${String(i+1).padStart(2,'0')}</div>
-        ${estados.map(e => `
-          <button class="estado-btn ${registro[al.id]===e?'active-'+e:''}"
-            onclick="marcar('${al.id}','${e}')">${e}</button>
-        `).join('')}
+        ${estados.map(e => `<button class="estado-btn ${registro[al.id]===e?'active-'+e:''}" onclick="marcar('${al.id}','${e}')">${e}</button>`).join('')}
       `;
       cont.appendChild(row);
     });
@@ -448,28 +433,18 @@
     if (registrados < alumnos.length) {
       if (!confirm(`Hay ${alumnos.length - registrados} alumnos sin registrar. ¿Confirmar de todas formas?`)) return;
     }
-
     const btn = document.getElementById('btn-guardar');
     btn.disabled = true;
     btn.innerHTML = '<i class="ti ti-loader"></i> Guardando...';
-
     const payload = {
       accion: 'guardarAsistencia',
       curso: document.getElementById('sel-curso').value,
       fecha: document.getElementById('sel-fecha').value,
       preceptor: 'David Depaoli',
-      alumnos: alumnos.map(al => ({
-        id_alumno: al.id,
-        estado: registro[al.id] || 'Sin registrar',
-        observacion: ''
-      }))
+      alumnos: alumnos.map(al => ({ id_alumno: al.id, estado: registro[al.id] || 'Sin registrar', observacion: '' }))
     };
-
     try {
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      });
+      await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
       mostrarToast('Asistencia guardada correctamente ✓', 'ok');
       registro = {};
       renderAsistencia();
