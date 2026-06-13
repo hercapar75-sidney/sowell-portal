@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -23,6 +24,26 @@
       --radius: 10px; --radius-lg: 14px;
     }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* LOGIN */
+    #login-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    }
+    .login-card {
+      background: var(--surface); border-radius: var(--radius-lg);
+      padding: 40px; width: 360px; text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .login-logo { width: 64px; height: 64px; border-radius: 50%; background: var(--navy-light); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 500; color: var(--navy); margin: 0 auto 16px; }
+    .login-title { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .login-sub { font-size: 13px; color: var(--text3); margin-bottom: 28px; }
+    .login-divider { font-size: 11px; color: var(--text3); margin: 20px 0; }
+    .login-error { background: var(--red-light); border: 0.5px solid var(--red); border-radius: var(--radius); padding: 10px 14px; font-size: 12px; color: #501313; margin-top: 16px; display: none; }
+    .login-loading { font-size: 12px; color: var(--text3); margin-top: 16px; display: none; }
+
+    /* APP */
+    #app { display: none; }
     .topbar { background: var(--navy); height: 56px; display: flex; align-items: center; padding: 0 28px; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
     .topbar-left { display: flex; align-items: center; gap: 14px; }
     .logo-circle { width: 36px; height: 36px; border-radius: 50%; background: var(--navy-light); display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 13px; color: var(--navy); }
@@ -31,9 +52,16 @@
     .topbar-nav { display: flex; gap: 2px; }
     .nav-item { color: rgba(255,255,255,0.7); font-size: 13px; padding: 6px 14px; border-radius: 8px; cursor: pointer; border: none; background: transparent; font-family: 'DM Sans', sans-serif; transition: background 0.15s; }
     .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.16); color: #fff; }
-    .user-pill { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); border-radius: 20px; padding: 4px 12px 4px 5px; }
-    .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: #fff; }
+    .user-pill { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); border-radius: 20px; padding: 4px 12px 4px 5px; cursor: pointer; position: relative; }
+    .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: #fff; overflow: hidden; }
+    .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .user-name { color: rgba(255,255,255,0.9); font-size: 12px; }
+    .logout-menu { position: absolute; top: 38px; right: 0; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 4px; min-width: 160px; display: none; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 200; }
+    .logout-menu.open { display: block; }
+    .logout-btn { width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: none; background: transparent; font-size: 12px; color: var(--red); cursor: pointer; border-radius: 6px; font-family: 'DM Sans', sans-serif; }
+    .logout-btn:hover { background: var(--red-light); }
+    .rol-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); margin-left: 4px; }
+
     .page { display: none; }
     .page.active { display: block; }
     .hero { background: linear-gradient(120deg, var(--navy) 0%, var(--navy-mid) 100%); padding: 32px 28px 28px; display: flex; align-items: center; justify-content: space-between; }
@@ -55,18 +83,14 @@
     .notice-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
     .notice-meta { font-size: 11px; color: var(--text3); }
     .badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
-
-    /* CURSOS POR AÑO */
     .anio-section { margin-bottom: 14px; }
     .anio-title { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
     .curso-chips-row { display: flex; gap: 8px; flex-wrap: wrap; }
     .curso-chip { display: flex; align-items: center; gap: 6px; background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 8px 14px; text-decoration: none; transition: all 0.15s; }
     .curso-chip:hover { background: var(--navy-light); border-color: var(--navy-mid); }
     .curso-chip-label { font-size: 13px; font-weight: 500; color: var(--text); }
-    .curso-chip-turno { font-size: 10px; color: var(--text3); }
     .turno-m { color: var(--amber-dark); background: var(--amber-light); padding: 1px 6px; border-radius: 6px; font-size: 10px; }
     .turno-t { color: #26215C; background: var(--purple-light); padding: 1px 6px; border-radius: 6px; font-size: 10px; }
-
     .calendar-days { display: flex; gap: 4px; margin-bottom: 12px; }
     .cal-day { flex: 1; text-align: center; padding: 6px 2px; border-radius: var(--radius); }
     .cal-day-name { font-size: 10px; color: var(--text3); margin-bottom: 4px; }
@@ -83,8 +107,6 @@
     .qa-btn { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 12px; cursor: pointer; color: var(--text); font-size: 12px; font-weight: 500; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
     .qa-btn:hover { background: var(--surface); border-color: var(--border2); }
     .qa-btn i { font-size: 18px; color: var(--navy-mid); }
-
-    /* MÓDULO ASISTENCIA */
     .modulo-wrap { padding: 20px 28px 32px; }
     .modulo-topbar { background: var(--navy); border-radius: var(--radius-lg); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .modulo-title { color: #fff; font-size: 15px; font-weight: 500; }
@@ -130,225 +152,340 @@
       .modulo-wrap { padding: 16px; }
       .controls-grid { grid-template-columns: 1fr; }
       .stats-asistencia { grid-template-columns: repeat(3,1fr); }
+      .login-card { width: 90%; padding: 28px 20px; }
     }
   </style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="topbar-left">
-    <div class="logo-circle">SW</div>
-    <div>
-      <div class="school-name">Sowell</div>
-      <div class="school-sub">Portal institucional · Secundaria</div>
+<!-- PANTALLA DE LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">SW</div>
+    <div class="login-title">Portal Sowell</div>
+    <div class="login-sub">Secundaria · Ciclo lectivo 2026</div>
+    <div id="g_id_onload"
+      data-client_id="568515942154-gjqcsdhmvtv6usvmgkt0v5l335epb7dt.apps.googleusercontent.com"
+      data-callback="handleCredentialResponse"
+      data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin"
+      data-type="standard"
+      data-size="large"
+      data-theme="outline"
+      data-text="sign_in_with"
+      data-shape="rectangular"
+      data-logo_alignment="left"
+      data-width="280">
+    </div>
+    <div class="login-loading" id="login-loading">
+      <i class="ti ti-loader"></i> Verificando acceso...
+    </div>
+    <div class="login-error" id="login-error">
+      ⚠️ Tu cuenta no tiene acceso al portal. Contactá al director.
     </div>
   </div>
-  <nav class="topbar-nav">
-    <button class="nav-item active" onclick="showPage('inicio',this)">Inicio</button>
-    <button class="nav-item" onclick="showPage('asistencia',this)">Asistencia</button>
-    <button class="nav-item" onclick="showPage('inicio',this)">Calificaciones</button>
-    <button class="nav-item" onclick="showPage('inicio',this)">Sanciones</button>
-    <button class="nav-item" onclick="showPage('inicio',this)">Comunicados</button>
-  </nav>
-  <div class="user-pill">
-    <div class="user-avatar">DR</div>
-    <span class="user-name">Director</span>
-  </div>
-</header>
+</div>
 
-<!-- PÁGINA INICIO -->
-<div id="page-inicio" class="page active">
-  <section class="hero">
-    <div>
-      <h1 class="hero-title">Buenos días 👋</h1>
-      <p class="hero-sub">Ciclo lectivo 2026 · Secundaria · sowell.edu.ar</p>
-    </div>
-    <div class="hero-date">
-      <div class="hero-date-day" id="day"></div>
-      <div class="hero-date-month" id="monthYear"></div>
-    </div>
-  </section>
-
-  <main class="content">
-    <div>
-      <div class="stat-row">
-        <div class="stat-card"><div class="stat-num">18</div><div class="stat-label">cursos activos</div></div>
-        <div class="stat-card"><div class="stat-num">42</div><div class="stat-label">docentes</div></div>
-        <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">avisos nuevos</div></div>
+<!-- APP PRINCIPAL -->
+<div id="app">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo-circle">SW</div>
+      <div>
+        <div class="school-name">Sowell</div>
+        <div class="school-sub">Portal institucional · Secundaria</div>
       </div>
+    </div>
+    <nav class="topbar-nav" id="topbar-nav"></nav>
+    <div class="user-pill" onclick="toggleLogout()">
+      <div class="user-avatar" id="user-avatar">DR</div>
+      <span class="user-name" id="user-name">Usuario</span>
+      <span class="rol-badge" id="rol-badge">-</span>
+      <div class="logout-menu" id="logout-menu">
+        <button class="logout-btn" onclick="cerrarSesion()">
+          <i class="ti ti-logout"></i> Cerrar sesión
+        </button>
+      </div>
+    </div>
+  </header>
 
-      <p class="section-title">Avisos recientes</p>
-      <div class="card">
-        <div class="notice-item">
-          <div class="notice-dot" style="background:var(--green)"></div>
-          <div>
-            <div class="notice-title">Bienvenidos al portal institucional Sowell <span class="badge" style="background:var(--green-light);color:var(--green-dark)">Institucional</span></div>
-            <div class="notice-meta">Hoy · Todos los cursos</div>
+  <!-- PÁGINA INICIO -->
+  <div id="page-inicio" class="page active">
+    <section class="hero">
+      <div>
+        <h1 class="hero-title" id="hero-saludo">Buenos días 👋</h1>
+        <p class="hero-sub">Ciclo lectivo 2026 · Secundaria · sowell.edu.ar</p>
+      </div>
+      <div class="hero-date">
+        <div class="hero-date-day" id="day"></div>
+        <div class="hero-date-month" id="monthYear"></div>
+      </div>
+    </section>
+    <main class="content">
+      <div>
+        <div class="stat-row">
+          <div class="stat-card"><div class="stat-num">18</div><div class="stat-label">cursos activos</div></div>
+          <div class="stat-card"><div class="stat-num">42</div><div class="stat-label">docentes</div></div>
+          <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">avisos nuevos</div></div>
+        </div>
+        <p class="section-title">Avisos recientes</p>
+        <div class="card">
+          <div class="notice-item">
+            <div class="notice-dot" style="background:var(--green)"></div>
+            <div>
+              <div class="notice-title">Bienvenidos al portal institucional Sowell <span class="badge" style="background:var(--green-light);color:var(--green-dark)">Institucional</span></div>
+              <div class="notice-meta">Hoy · Todos los cursos</div>
+            </div>
+          </div>
+          <div class="notice-item">
+            <div class="notice-dot" style="background:var(--blue-mid)"></div>
+            <div>
+              <div class="notice-title">Módulo de asistencia disponible <span class="badge" style="background:var(--blue-light);color:#0C447C">Novedad</span></div>
+              <div class="notice-meta">Hoy · Preceptores</div>
+            </div>
           </div>
         </div>
-        <div class="notice-item">
-          <div class="notice-dot" style="background:var(--blue-mid)"></div>
-          <div>
-            <div class="notice-title">Módulo de asistencia disponible <span class="badge" style="background:var(--blue-light);color:#0C447C">Novedad</span></div>
-            <div class="notice-meta">Hoy · Preceptores</div>
-          </div>
-        </div>
-      </div>
-
-      <p class="section-title">Cursos del secundario</p>
-
-      <div class="card">
-        <!-- 1° año -->
-        <div class="anio-section">
-          <div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 1° año</div>
-          <div class="curso-chips-row">
+        <p class="section-title">Cursos del secundario</p>
+        <div class="card">
+          <div class="anio-section"><div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 1° año</div><div class="curso-chips-row">
             <a href="https://classroom.google.com/c/Nzk4MTQwMDY0Nzk1" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">1° A</span><span class="turno-m">mañana</span></a>
             <a href="https://classroom.google.com/c/Nzk4MTQwMDc0MTEw" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">1° B</span><span class="turno-m">mañana</span></a>
             <a href="https://classroom.google.com/c/Nzk4MTM5NTEzMTcy" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">1° C</span><span class="turno-t">tarde</span></a>
-          </div>
-        </div>
-        <!-- 2° año -->
-        <div class="anio-section">
-          <div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 2° año</div>
-          <div class="curso-chips-row">
+          </div></div>
+          <div class="anio-section"><div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 2° año</div><div class="curso-chips-row">
             <a href="https://classroom.google.com/c/Nzk4MTM5NTMyNTQ4" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">2° A</span><span class="turno-m">mañana</span></a>
             <a href="https://classroom.google.com/c/Nzk4MTQwMDEzOTgw" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">2° B</span><span class="turno-m">mañana</span></a>
             <a href="https://classroom.google.com/c/Nzk4MTQwMTYxMTMz" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">2° C</span><span class="turno-t">tarde</span></a>
-          </div>
-        </div>
-        <!-- 3° año -->
-        <div class="anio-section">
-          <div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 3° año</div>
-          <div class="curso-chips-row">
+          </div></div>
+          <div class="anio-section"><div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 3° año</div><div class="curso-chips-row">
             <a href="https://classroom.google.com/c/Nzk4MTM5OTk3MDIz" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">3° A</span><span class="turno-m">mañana</span></a>
             <a href="https://classroom.google.com/c/Nzk4MTQwMTk2NTY5" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">3° B</span><span class="turno-m">mañana</span></a>
             <a href="https://classroom.google.com/c/Nzk4MTQwMjE5OTQ4" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">3° C</span><span class="turno-t">tarde</span></a>
-          </div>
-        </div>
-        <!-- 4° año -->
-        <div class="anio-section">
-          <div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 4° año</div>
-          <div class="curso-chips-row">
+          </div></div>
+          <div class="anio-section"><div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 4° año</div><div class="curso-chips-row">
             <a href="https://classroom.google.com/c/Nzk4MTQwMTc3MTU0" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">4° A</span><span class="turno-m">mañana</span></a>
             <a href="https://classroom.google.com/c/Nzk4MTQwMTc5OTU5" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">4° B</span><span class="turno-m">mañana</span></a>
             <a href="https://classroom.google.com/c/Nzk4MTQwMDcyNjQ5" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">4° C</span><span class="turno-t">tarde</span></a>
-          </div>
-        </div>
-        <!-- 5° año -->
-        <div class="anio-section">
-          <div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 5° año</div>
-          <div class="curso-chips-row">
+          </div></div>
+          <div class="anio-section"><div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 5° año</div><div class="curso-chips-row">
             <a href="https://classroom.google.com/c/Nzk4MTM5ODc5NDkx" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">5° A</span><span class="turno-m">mañana</span></a>
             <a href="https://classroom.google.com/c/Nzk4MTQwMjMzMTkw" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">5° B</span><span class="turno-m">mañana</span></a>
             <a href="https://classroom.google.com/c/Nzk4MTQwMzAxNjky" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">5° C</span><span class="turno-t">tarde</span></a>
-          </div>
-        </div>
-        <!-- 6° año -->
-        <div class="anio-section" style="margin-bottom:0">
-          <div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 6° año</div>
-          <div class="curso-chips-row">
+          </div></div>
+          <div class="anio-section" style="margin-bottom:0"><div class="anio-title"><i class="ti ti-school" style="font-size:14px"></i> 6° año</div><div class="curso-chips-row">
             <a href="https://classroom.google.com/c/Nzk4MTQwMTk0Njg4" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">6° A</span><span class="turno-m">mañana</span></a>
             <a href="https://classroom.google.com/c/Nzk4MTQwMjQ2Mjkw" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">6° B</span><span class="turno-m">mañana</span></a>
             <a href="https://classroom.google.com/c/Nzk4MTQwMjg2OTQy" target="_blank" rel="noopener" class="curso-chip"><span class="curso-chip-label">6° C</span><span class="turno-t">tarde</span></a>
-          </div>
+          </div></div>
         </div>
       </div>
-    </div>
+      <div>
+        <p class="section-title">Esta semana</p>
+        <div class="card">
+          <div class="calendar-days" id="cal-days"></div>
+          <div class="event-item"><div class="event-bar" style="background:var(--green)"></div><div><div class="event-title">Reunión de personal</div><div class="event-time">Jue · 14:00 hs</div></div></div>
+          <div class="event-item"><div class="event-bar" style="background:var(--blue-mid)"></div><div><div class="event-title">Entrega boletines 4°, 5° y 6°</div><div class="event-time">Vie · Todo el día</div></div></div>
+        </div>
+        <p class="section-title">Acciones rápidas</p>
+        <div class="quick-actions">
+          <button class="qa-btn" onclick="showPage('asistencia',document.querySelectorAll('.nav-item')[1])"><i class="ti ti-clipboard-check"></i> Asistencia</button>
+          <button class="qa-btn"><i class="ti ti-speakerphone"></i> Comunicado</button>
+          <button class="qa-btn"><i class="ti ti-alert-triangle"></i> Sanción</button>
+          <button class="qa-btn"><i class="ti ti-file-text"></i> Documentos</button>
+        </div>
+      </div>
+    </main>
+  </div>
 
-    <div>
-      <p class="section-title">Esta semana</p>
-      <div class="card">
-        <div class="calendar-days" id="cal-days"></div>
-        <div class="event-item">
-          <div class="event-bar" style="background:var(--green)"></div>
-          <div><div class="event-title">Reunión de personal</div><div class="event-time">Jue · 14:00 hs</div></div>
+  <!-- PÁGINA ASISTENCIA -->
+  <div id="page-asistencia" class="page">
+    <div class="modulo-wrap">
+      <div class="modulo-topbar">
+        <div style="display:flex;align-items:center;gap:10px">
+          <i class="ti ti-clipboard-check" style="color:#fff;font-size:20px"></i>
+          <div><div class="modulo-title">Toma de asistencia</div><div class="modulo-sub" id="asist-sub">Sowell · Secundaria</div></div>
         </div>
-        <div class="event-item">
-          <div class="event-bar" style="background:var(--blue-mid)"></div>
-          <div><div class="event-title">Entrega boletines 4°, 5° y 6°</div><div class="event-time">Vie · Todo el día</div></div>
-        </div>
-      </div>
-      <p class="section-title">Acciones rápidas</p>
-      <div class="quick-actions">
-        <button class="qa-btn" onclick="showPage('asistencia',document.querySelectorAll('.nav-item')[1])"><i class="ti ti-clipboard-check"></i> Asistencia</button>
-        <button class="qa-btn"><i class="ti ti-speakerphone"></i> Comunicado</button>
-        <button class="qa-btn"><i class="ti ti-alert-triangle"></i> Sanción</button>
-        <button class="qa-btn"><i class="ti ti-file-text"></i> Documentos</button>
-      </div>
-    </div>
-  </main>
-</div>
-
-<!-- PÁGINA ASISTENCIA -->
-<div id="page-asistencia" class="page">
-  <div class="modulo-wrap">
-    <div class="modulo-topbar">
-      <div style="display:flex;align-items:center;gap:10px">
-        <i class="ti ti-clipboard-check" style="color:#fff;font-size:20px"></i>
-        <div>
-          <div class="modulo-title">Toma de asistencia</div>
-          <div class="modulo-sub">Sowell · Secundaria</div>
+        <div class="user-pill" style="cursor:default">
+          <div class="user-avatar" id="asist-avatar">?</div>
+          <span class="user-name" id="asist-nombre">Cargando...</span>
         </div>
       </div>
-      <div class="user-pill">
-        <div class="user-avatar">DD</div>
-        <span class="user-name">David Depaoli</span>
+      <div class="controls-grid">
+        <div class="ctrl-card"><div class="ctrl-label">Fecha</div><select id="sel-fecha"></select></div>
+        <div class="ctrl-card"><div class="ctrl-label">Turno</div><select id="sel-turno"><option>Mañana</option><option>Tarde</option></select></div>
+        <div class="ctrl-card"><div class="ctrl-label">Curso</div><select id="sel-curso"></select></div>
       </div>
-    </div>
-    <div class="controls-grid">
-      <div class="ctrl-card"><div class="ctrl-label">Fecha</div><select id="sel-fecha"></select></div>
-      <div class="ctrl-card"><div class="ctrl-label">Turno</div><select id="sel-turno"><option>Mañana</option><option>Tarde</option></select></div>
-      <div class="ctrl-card"><div class="ctrl-label">Curso</div>
-        <select id="sel-curso">
-          <option>1° A</option><option>1° B</option><option>1° C</option>
-          <option>2° A</option><option>2° B</option><option>2° C</option>
-          <option>3° A</option><option>3° B</option><option>3° C</option>
-          <option>4° A</option><option>4° B</option><option>4° C</option>
-          <option>5° A</option><option>5° B</option><option>5° C</option>
-          <option>6° A</option><option>6° B</option><option>6° C</option>
-        </select>
+      <div class="stats-asistencia">
+        <div class="stat-asis"><div class="stat-asis-num" id="cnt-total" style="color:var(--text)">0</div><div class="stat-asis-lbl">Total</div></div>
+        <div class="stat-asis"><div class="stat-asis-num" id="cnt-P" style="color:var(--green)">0</div><div class="stat-asis-lbl">Presentes</div></div>
+        <div class="stat-asis"><div class="stat-asis-num" id="cnt-A" style="color:var(--red)">0</div><div class="stat-asis-lbl">Ausentes</div></div>
+        <div class="stat-asis"><div class="stat-asis-num" id="cnt-T" style="color:var(--amber)">0</div><div class="stat-asis-lbl">Tarde</div></div>
+        <div class="stat-asis"><div class="stat-asis-num" id="cnt-J" style="color:var(--blue-mid)">0</div><div class="stat-asis-lbl">Justif.</div></div>
+        <div class="stat-asis"><div class="stat-asis-num" id="cnt-otros" style="color:var(--purple)">0</div><div class="stat-asis-lbl">Otros</div></div>
       </div>
-    </div>
-    <div class="stats-asistencia">
-      <div class="stat-asis"><div class="stat-asis-num" style="color:var(--text)" id="cnt-total">0</div><div class="stat-asis-lbl">Total</div></div>
-      <div class="stat-asis"><div class="stat-asis-num" id="cnt-P" style="color:var(--green)">0</div><div class="stat-asis-lbl">Presentes</div></div>
-      <div class="stat-asis"><div class="stat-asis-num" id="cnt-A" style="color:var(--red)">0</div><div class="stat-asis-lbl">Ausentes</div></div>
-      <div class="stat-asis"><div class="stat-asis-num" id="cnt-T" style="color:var(--amber)">0</div><div class="stat-asis-lbl">Tarde</div></div>
-      <div class="stat-asis"><div class="stat-asis-num" id="cnt-J" style="color:var(--blue-mid)">0</div><div class="stat-asis-lbl">Justif.</div></div>
-      <div class="stat-asis"><div class="stat-asis-num" id="cnt-otros" style="color:var(--purple)">0</div><div class="stat-asis-lbl">Otros</div></div>
-    </div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>P — Presente</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>A — Ausente</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>T — Tarde</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--blue-mid)"></div>J — Justificado</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>R — Retiro anticipado</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#D4537E"></div>AA — Aus. administrativo</div>
-    </div>
-    <div class="notif-banner">
-      <i class="ti ti-mail-forward" style="font-size:18px;flex-shrink:0"></i>
-      Las familias de alumnos ausentes o con ausente administrativo recibirán una notificación automática por email al confirmar.
-    </div>
-    <div class="lista-header">
-      <span>Alumno</span><span>#</span>
-      <span>P</span><span>A</span><span>T</span><span>J</span><span>R</span><span>AA</span>
-    </div>
-    <div id="lista-alumnos"></div>
-    <div class="modulo-footer">
-      <div class="modulo-footer-info" id="footer-info">0 alumnos registrados</div>
-      <button class="btn-guardar" id="btn-guardar" onclick="guardarAsistencia()">
-        <i class="ti ti-device-floppy"></i> Confirmar y guardar
-      </button>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>P — Presente</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>A — Ausente</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>T — Tarde</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--blue-mid)"></div>J — Justificado</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>R — Retiro anticipado</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#D4537E"></div>AA — Aus. administrativo</div>
+      </div>
+      <div class="notif-banner"><i class="ti ti-mail-forward" style="font-size:18px;flex-shrink:0"></i> Las familias de alumnos ausentes recibirán una notificación automática por email al confirmar.</div>
+      <div class="lista-header"><span>Alumno</span><span>#</span><span>P</span><span>A</span><span>T</span><span>J</span><span>R</span><span>AA</span></div>
+      <div id="lista-alumnos"></div>
+      <div class="modulo-footer">
+        <div class="modulo-footer-info" id="footer-info">0 alumnos registrados</div>
+        <button class="btn-guardar" id="btn-guardar" onclick="guardarAsistencia()"><i class="ti ti-device-floppy"></i> Confirmar y guardar</button>
+      </div>
     </div>
   </div>
+
+  <footer><p>© 2026 Sowell · <a href="mailto:info@sowell.edu.ar" style="color:var(--navy-mid);text-decoration:none">info@sowell.edu.ar</a> · portal.sowell.edu.ar</p></footer>
 </div>
 
 <div class="toast" id="toast"></div>
-<footer><p>© 2026 Sowell · <a href="mailto:info@sowell.edu.ar" style="color:var(--navy-mid);text-decoration:none">info@sowell.edu.ar</a> · portal.sowell.edu.ar</p></footer>
 
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4334x-UNxJ-LYgzo-yUuwu4-4R2TXiua5rqhRBul9zRmM7aAr58jF0NIeaV-GCIqg/exec';
+  // ============================================================
+  // CONFIGURACIÓN
+  // ============================================================
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4UlQ-VzgnvnhXmrrNuHKJczEZIvvzanM9P7H3Yx_mu1bCyWf996ESB-zNLJqRzHe1/exec';
 
+  // Cursos por preceptor
+  const CURSOS_PRECEPTOR = {
+    'ddepaoli@sowell.edu.ar':  ['1° A','1° B','2° A'],
+    'eperez@sowell.edu.ar':    ['2° B','3° A','3° B'],
+    'dperez@sowell.edu.ar':    ['4° A','4° B','5° A'],
+    'flarroude@sowell.edu.ar': ['5° B','6° A','6° B'],
+    'camaro@sowell.edu.ar':    ['1° C','2° C','3° C'],
+    'pcanon@sowell.edu.ar':    ['4° C','5° C','6° C'],
+  };
+  const TODOS_LOS_CURSOS = ['1° A','1° B','1° C','2° A','2° B','2° C','3° A','3° B','3° C','4° A','4° B','4° C','5° A','5° B','5° C','6° A','6° B','6° C'];
+
+  // Navegación según rol
+  const NAV_POR_ROL = {
+    director:  [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Calificaciones',page:'inicio'},{label:'Sanciones',page:'inicio'},{label:'Comunicados',page:'inicio'}],
+    preceptor: [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Sanciones',page:'inicio'},{label:'Comunicados',page:'inicio'}],
+    docente:   [{label:'Inicio',page:'inicio'},{label:'Calificaciones',page:'inicio'}],
+    familia:   [{label:'Inicio',page:'inicio'}],
+    alumno:    [{label:'Inicio',page:'inicio'}],
+  };
+
+  // ============================================================
+  // ESTADO GLOBAL
+  // ============================================================
+  let usuarioActual = null;
+
+  // ============================================================
+  // LOGIN CON GOOGLE
+  // ============================================================
+  async function handleCredentialResponse(response) {
+    const loading = document.getElementById('login-loading');
+    const error = document.getElementById('login-error');
+    loading.style.display = 'block';
+    error.style.display = 'none';
+
+    // Decodificar el token JWT de Google
+    const payload = JSON.parse(atob(response.credential.split('.')[1]));
+    const email = payload.email;
+    const nombre = payload.given_name || '';
+    const apellido = payload.family_name || '';
+    const foto = payload.picture || '';
+
+    // Verificar en el Sheets
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ accion: 'verificarUsuario', email })
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        usuarioActual = {
+          email,
+          nombre: data.datos.nombre || nombre,
+          apellido: data.datos.apellido || apellido,
+          rol: data.datos.rol,
+          cursos: data.datos.cursos,
+          foto
+        };
+        iniciarApp();
+      } else {
+        loading.style.display = 'none';
+        error.style.display = 'block';
+      }
+    } catch(err) {
+      loading.style.display = 'none';
+      error.style.display = 'block';
+      error.textContent = '⚠️ Error de conexión. Intentá de nuevo.';
+    }
+  }
+
+  function iniciarApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+
+    const u = usuarioActual;
+    const iniciales = (u.nombre[0]||'') + (u.apellido[0]||'');
+
+    // Avatar
+    const avatarEl = document.getElementById('user-avatar');
+    if (u.foto) {
+      avatarEl.innerHTML = `<img src="${u.foto}" alt="${u.nombre}">`;
+    } else {
+      avatarEl.textContent = iniciales.toUpperCase();
+    }
+    document.getElementById('user-name').textContent = u.nombre + ' ' + u.apellido;
+    document.getElementById('rol-badge').textContent = u.rol;
+
+    // Saludo
+    const hora = new Date().getHours();
+    const saludo = hora < 12 ? 'Buenos días' : hora < 18 ? 'Buenas tardes' : 'Buenas noches';
+    document.getElementById('hero-saludo').textContent = `${saludo}, ${u.nombre} 👋`;
+
+    // Navegación según rol
+    const nav = document.getElementById('topbar-nav');
+    const items = NAV_POR_ROL[u.rol] || NAV_POR_ROL.alumno;
+    nav.innerHTML = items.map((item, i) =>
+      `<button class="nav-item ${i===0?'active':''}" onclick="showPage('${item.page}',this)">${item.label}</button>`
+    ).join('');
+
+    // Cursos en asistencia según rol
+    const selCurso = document.getElementById('sel-curso');
+    selCurso.innerHTML = '';
+    const cursos = u.rol === 'director' ? TODOS_LOS_CURSOS : (CURSOS_PRECEPTOR[u.email] || TODOS_LOS_CURSOS);
+    cursos.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      selCurso.appendChild(opt);
+    });
+
+    // Info asistencia
+    document.getElementById('asist-avatar').textContent = iniciales.toUpperCase();
+    document.getElementById('asist-nombre').textContent = u.nombre + ' ' + u.apellido;
+    document.getElementById('asist-sub').textContent = `Sowell · ${u.rol.charAt(0).toUpperCase() + u.rol.slice(1)}`;
+
+    inicializarFecha();
+    inicializarCalendario();
+    renderAsistencia();
+  }
+
+  function cerrarSesion() {
+    usuarioActual = null;
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('logout-menu').classList.remove('open');
+  }
+
+  function toggleLogout() {
+    document.getElementById('logout-menu').classList.toggle('open');
+  }
+
+  // ============================================================
+  // NAVEGACIÓN
+  // ============================================================
   function showPage(id, btn) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -356,30 +493,41 @@
     if (btn) btn.classList.add('active');
   }
 
-  const now = new Date();
-  document.getElementById('day').textContent = now.getDate();
-  document.getElementById('monthYear').textContent = now.toLocaleDateString('es-AR', { month: 'long' }) + ' ' + now.getFullYear();
-
-  const selFecha = document.getElementById('sel-fecha');
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    const opt = document.createElement('option');
-    opt.value = d.toISOString().split('T')[0];
-    opt.textContent = d.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
-    if (i === 0) opt.selected = true;
-    selFecha.appendChild(opt);
+  // ============================================================
+  // FECHA Y CALENDARIO
+  // ============================================================
+  function inicializarFecha() {
+    const now = new Date();
+    document.getElementById('day').textContent = now.getDate();
+    document.getElementById('monthYear').textContent = now.toLocaleDateString('es-AR', { month: 'long' }) + ' ' + now.getFullYear();
+    const selFecha = document.getElementById('sel-fecha');
+    selFecha.innerHTML = '';
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const opt = document.createElement('option');
+      opt.value = d.toISOString().split('T')[0];
+      opt.textContent = d.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+      if (i === 0) opt.selected = true;
+      selFecha.appendChild(opt);
+    }
   }
 
-  const dias = ['dom','lun','mar','mié','jue','vie','sáb'];
-  const calContainer = document.getElementById('cal-days');
-  for (let i = -2; i <= 2; i++) {
-    const d = new Date(); d.setDate(d.getDate() + i);
-    const div = document.createElement('div');
-    div.className = 'cal-day' + (i === 0 ? ' today' : '');
-    div.innerHTML = `<div class="cal-day-name">${dias[d.getDay()]}</div><div class="cal-day-num">${d.getDate()}</div>`;
-    calContainer.appendChild(div);
+  function inicializarCalendario() {
+    const dias = ['dom','lun','mar','mié','jue','vie','sáb'];
+    const cal = document.getElementById('cal-days');
+    cal.innerHTML = '';
+    for (let i = -2; i <= 2; i++) {
+      const d = new Date(); d.setDate(d.getDate() + i);
+      const div = document.createElement('div');
+      div.className = 'cal-day' + (i === 0 ? ' today' : '');
+      div.innerHTML = `<div class="cal-day-name">${dias[d.getDay()]}</div><div class="cal-day-num">${d.getDate()}</div>`;
+      cal.appendChild(div);
+    }
   }
 
+  // ============================================================
+  // MÓDULO ASISTENCIA
+  // ============================================================
   const alumnos = [
     {id:'AL001',nombre:'Álvarez, Martín'},{id:'AL002',nombre:'Benítez, Sofía'},
     {id:'AL003',nombre:'Castro, Tomás'},{id:'AL004',nombre:'Díaz, Valentina'},
@@ -440,7 +588,7 @@
       accion: 'guardarAsistencia',
       curso: document.getElementById('sel-curso').value,
       fecha: document.getElementById('sel-fecha').value,
-      preceptor: 'David Depaoli',
+      preceptor: usuarioActual ? usuarioActual.nombre + ' ' + usuarioActual.apellido : 'Sistema',
       alumnos: alumnos.map(al => ({ id_alumno: al.id, estado: registro[al.id] || 'Sin registrar', observacion: '' }))
     };
     try {
@@ -448,7 +596,7 @@
       mostrarToast('Asistencia guardada correctamente ✓', 'ok');
       registro = {};
       renderAsistencia();
-    } catch (err) {
+    } catch(err) {
       mostrarToast('Error al guardar. Revisá la conexión.', 'error');
     } finally {
       btn.disabled = false;
@@ -463,8 +611,7 @@
     t.style.display = 'block';
     setTimeout(() => t.style.display = 'none', 3500);
   }
-
-  renderAsistencia();
 </script>
 </body>
 </html>
+
