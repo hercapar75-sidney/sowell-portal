@@ -469,7 +469,8 @@
 
     inicializarFecha();
     inicializarCalendario();
-    renderAsistencia();
+    const primerCurso = document.getElementById("sel-curso").value;
+  if (primerCurso) cargarAlumnos(primerCurso);
   }
 
   function cerrarSesion() {
@@ -528,7 +529,7 @@
   // ============================================================
   // MÓDULO ASISTENCIA
   // ============================================================
-  const alumnos = [
+  let alumnosActuales = [
     {id:'AL001',nombre:'Álvarez, Martín'},{id:'AL002',nombre:'Benítez, Sofía'},
     {id:'AL003',nombre:'Castro, Tomás'},{id:'AL004',nombre:'Díaz, Valentina'},
     {id:'AL005',nombre:'Fernández, Lucas'},{id:'AL006',nombre:'García, Camila'},
@@ -541,14 +542,38 @@
     {id:'AL019',nombre:'Reyes, Joaquín'},{id:'AL020',nombre:'Ríos, Martina'}
   ];
 
+  // Cargar alumnos desde Sheet
+  async function cargarAlumnos(curso) {
+    const cont = document.getElementById("lista-alumnos");
+    cont.innerHTML = "<div style="padding:20px;text-align:center;font-size:12px;color:var(--text3)"><i class="ti ti-loader"></i> Cargando alumnos...</div>";
+    registro = {};
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ accion: "getAlumnosPorCurso", curso })
+      });
+      const data = await res.json();
+      if (data.ok && data.datos.length > 0) {
+        alumnosActuales = data.datos;
+        document.getElementById("cnt-total").textContent = alumnosActuales.length;
+        const primerCurso = document.getElementById("sel-curso").value;
+  if (primerCurso) cargarAlumnos(primerCurso);
+      } else {
+        cont.innerHTML = "<div style="padding:20px;text-align:center;font-size:12px;color:var(--text3)">No se encontraron alumnos para este curso.</div>";
+      }
+    } catch(err) {
+      cont.innerHTML = "<div style="padding:20px;text-align:center;font-size:12px;color:var(--red)">Error al cargar alumnos. Revisá la conexión.</div>";
+    }
+  }
+
   const estados = ['P','A','T','J','R','AA'];
   let registro = {};
 
   function renderAsistencia() {
     const cont = document.getElementById('lista-alumnos');
     cont.innerHTML = '';
-    document.getElementById('cnt-total').textContent = alumnos.length;
-    alumnos.forEach((al, i) => {
+    document.getElementById('cnt-total').textContent = alumnosActuales.length;
+    alumnosActuales.forEach((al, i) => {
       const row = document.createElement('div');
       row.className = 'alumno-row';
       row.innerHTML = `
@@ -563,7 +588,8 @@
 
   function marcar(id, estado) {
     registro[id] = registro[id] === estado ? null : estado;
-    renderAsistencia();
+    const primerCurso = document.getElementById("sel-curso").value;
+  if (primerCurso) cargarAlumnos(primerCurso);
   }
 
   function actualizarStats() {
@@ -573,13 +599,13 @@
     document.getElementById('cnt-T').textContent = vals.filter(v=>v==='T').length;
     document.getElementById('cnt-J').textContent = vals.filter(v=>v==='J').length;
     document.getElementById('cnt-otros').textContent = vals.filter(v=>v==='R'||v==='AA').length;
-    document.getElementById('footer-info').textContent = `${vals.length} de ${alumnos.length} alumnos registrados`;
+    document.getElementById('footer-info').textContent = `${vals.length} de ${alumnosActuales.length} alumnos registrados`;
   }
 
   async function guardarAsistencia() {
     const registrados = Object.values(registro).filter(Boolean).length;
-    if (registrados < alumnos.length) {
-      if (!confirm(`Hay ${alumnos.length - registrados} alumnos sin registrar. ¿Confirmar de todas formas?`)) return;
+    if (registrados < alumnosActuales.length) {
+      if (!confirm(`Hay ${alumnosActuales.length - registrados} alumnos sin registrar. ¿Confirmar de todas formas?`)) return;
     }
     const btn = document.getElementById('btn-guardar');
     btn.disabled = true;
@@ -589,13 +615,14 @@
       curso: document.getElementById('sel-curso').value,
       fecha: document.getElementById('sel-fecha').value,
       preceptor: usuarioActual ? usuarioActual.nombre + ' ' + usuarioActual.apellido : 'Sistema',
-      alumnos: alumnos.map(al => ({ id_alumno: al.id, estado: registro[al.id] || 'Sin registrar', observacion: '' }))
+      alumnos: alumnosActuales.map(al => ({ id_alumno: al.id, estado: registro[al.id] || 'Sin registrar', observacion: '' }))
     };
     try {
       await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
       mostrarToast('Asistencia guardada correctamente ✓', 'ok');
       registro = {};
-      renderAsistencia();
+      const primerCurso = document.getElementById("sel-curso").value;
+  if (primerCurso) cargarAlumnos(primerCurso);
     } catch(err) {
       mostrarToast('Error al guardar. Revisá la conexión.', 'error');
     } finally {
@@ -614,4 +641,3 @@
 </script>
 </body>
 </html>
-
