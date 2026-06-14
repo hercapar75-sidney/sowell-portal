@@ -24,25 +24,13 @@
       --radius: 10px; --radius-lg: 14px;
     }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-    /* LOGIN */
-    #login-screen {
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
-    }
-    .login-card {
-      background: var(--surface); border-radius: var(--radius-lg);
-      padding: 40px; width: 360px; text-align: center;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
+    #login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); }
+    .login-card { background: var(--surface); border-radius: var(--radius-lg); padding: 40px; width: 360px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
     .login-logo { width: 64px; height: 64px; border-radius: 50%; background: var(--navy-light); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 500; color: var(--navy); margin: 0 auto 16px; }
     .login-title { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
     .login-sub { font-size: 13px; color: var(--text3); margin-bottom: 28px; }
-    .login-divider { font-size: 11px; color: var(--text3); margin: 20px 0; }
     .login-error { background: var(--red-light); border: 0.5px solid var(--red); border-radius: var(--radius); padding: 10px 14px; font-size: 12px; color: #501313; margin-top: 16px; display: none; }
     .login-loading { font-size: 12px; color: var(--text3); margin-top: 16px; display: none; }
-
-    /* APP */
     #app { display: none; }
     .topbar { background: var(--navy); height: 56px; display: flex; align-items: center; padding: 0 28px; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
     .topbar-left { display: flex; align-items: center; gap: 14px; }
@@ -56,12 +44,11 @@
     .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: #fff; overflow: hidden; }
     .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .user-name { color: rgba(255,255,255,0.9); font-size: 12px; }
+    .rol-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); margin-left: 4px; }
     .logout-menu { position: absolute; top: 38px; right: 0; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 4px; min-width: 160px; display: none; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 200; }
     .logout-menu.open { display: block; }
     .logout-btn { width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: none; background: transparent; font-size: 12px; color: var(--red); cursor: pointer; border-radius: 6px; font-family: 'DM Sans', sans-serif; }
     .logout-btn:hover { background: var(--red-light); }
-    .rol-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); margin-left: 4px; }
-
     .page { display: none; }
     .page.active { display: block; }
     .hero { background: linear-gradient(120deg, var(--navy) 0%, var(--navy-mid) 100%); padding: 32px 28px 28px; display: flex; align-items: center; justify-content: space-between; }
@@ -141,6 +128,7 @@
     .btn-guardar { background: var(--navy); color: #fff; border: none; border-radius: var(--radius); padding: 10px 24px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
     .btn-guardar:hover { background: var(--navy-mid); }
     .btn-guardar:disabled { opacity: 0.6; cursor: not-allowed; }
+    .cargando { padding: 20px; text-align: center; font-size: 12px; color: var(--text3); }
     .toast { position: fixed; bottom: 24px; right: 24px; background: var(--navy); color: #fff; padding: 12px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 500; display: none; z-index: 999; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
     .toast.ok { background: var(--green); }
     .toast.error { background: var(--red); }
@@ -158,7 +146,7 @@
 </head>
 <body>
 
-<!-- PANTALLA DE LOGIN -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">SW</div>
@@ -178,16 +166,12 @@
       data-logo_alignment="left"
       data-width="280">
     </div>
-    <div class="login-loading" id="login-loading">
-      <i class="ti ti-loader"></i> Verificando acceso...
-    </div>
-    <div class="login-error" id="login-error">
-      ⚠️ Tu cuenta no tiene acceso al portal. Contactá al director.
-    </div>
+    <div class="login-loading" id="login-loading">Verificando acceso...</div>
+    <div class="login-error" id="login-error">⚠️ Tu cuenta no tiene acceso al portal. Contactá al director.</div>
   </div>
 </div>
 
-<!-- APP PRINCIPAL -->
+<!-- APP -->
 <div id="app">
   <header class="topbar">
     <div class="topbar-left">
@@ -199,18 +183,16 @@
     </div>
     <nav class="topbar-nav" id="topbar-nav"></nav>
     <div class="user-pill" onclick="toggleLogout()">
-      <div class="user-avatar" id="user-avatar">DR</div>
+      <div class="user-avatar" id="user-avatar">?</div>
       <span class="user-name" id="user-name">Usuario</span>
       <span class="rol-badge" id="rol-badge">-</span>
       <div class="logout-menu" id="logout-menu">
-        <button class="logout-btn" onclick="cerrarSesion()">
-          <i class="ti ti-logout"></i> Cerrar sesión
-        </button>
+        <button class="logout-btn" onclick="cerrarSesion()"><i class="ti ti-logout"></i> Cerrar sesión</button>
       </div>
     </div>
   </header>
 
-  <!-- PÁGINA INICIO -->
+  <!-- INICIO -->
   <div id="page-inicio" class="page active">
     <section class="hero">
       <div>
@@ -233,17 +215,11 @@
         <div class="card">
           <div class="notice-item">
             <div class="notice-dot" style="background:var(--green)"></div>
-            <div>
-              <div class="notice-title">Bienvenidos al portal institucional Sowell <span class="badge" style="background:var(--green-light);color:var(--green-dark)">Institucional</span></div>
-              <div class="notice-meta">Hoy · Todos los cursos</div>
-            </div>
+            <div><div class="notice-title">Bienvenidos al portal institucional Sowell <span class="badge" style="background:var(--green-light);color:var(--green-dark)">Institucional</span></div><div class="notice-meta">Hoy · Todos los cursos</div></div>
           </div>
           <div class="notice-item">
             <div class="notice-dot" style="background:var(--blue-mid)"></div>
-            <div>
-              <div class="notice-title">Módulo de asistencia disponible <span class="badge" style="background:var(--blue-light);color:#0C447C">Novedad</span></div>
-              <div class="notice-meta">Hoy · Preceptores</div>
-            </div>
+            <div><div class="notice-title">Módulo de asistencia disponible <span class="badge" style="background:var(--blue-light);color:#0C447C">Novedad</span></div><div class="notice-meta">Hoy · Preceptores</div></div>
           </div>
         </div>
         <p class="section-title">Cursos del secundario</p>
@@ -298,7 +274,7 @@
     </main>
   </div>
 
-  <!-- PÁGINA ASISTENCIA -->
+  <!-- ASISTENCIA -->
   <div id="page-asistencia" class="page">
     <div class="modulo-wrap">
       <div class="modulo-topbar">
@@ -314,7 +290,7 @@
       <div class="controls-grid">
         <div class="ctrl-card"><div class="ctrl-label">Fecha</div><select id="sel-fecha"></select></div>
         <div class="ctrl-card"><div class="ctrl-label">Turno</div><select id="sel-turno"><option>Mañana</option><option>Tarde</option></select></div>
-        <div class="ctrl-card"><div class="ctrl-label">Curso</div><select id="sel-curso"></select></div>
+        <div class="ctrl-card"><div class="ctrl-label">Curso</div><select id="sel-curso" onchange="cargarAlumnos(this.value)"></select></div>
       </div>
       <div class="stats-asistencia">
         <div class="stat-asis"><div class="stat-asis-num" id="cnt-total" style="color:var(--text)">0</div><div class="stat-asis-lbl">Total</div></div>
@@ -334,7 +310,7 @@
       </div>
       <div class="notif-banner"><i class="ti ti-mail-forward" style="font-size:18px;flex-shrink:0"></i> Las familias de alumnos ausentes recibirán una notificación automática por email al confirmar.</div>
       <div class="lista-header"><span>Alumno</span><span>#</span><span>P</span><span>A</span><span>T</span><span>J</span><span>R</span><span>AA</span></div>
-      <div id="lista-alumnos"></div>
+      <div id="lista-alumnos"><div class="cargando">Seleccioná un curso para cargar los alumnos</div></div>
       <div class="modulo-footer">
         <div class="modulo-footer-info" id="footer-info">0 alumnos registrados</div>
         <button class="btn-guardar" id="btn-guardar" onclick="guardarAsistencia()"><i class="ti ti-device-floppy"></i> Confirmar y guardar</button>
@@ -348,12 +324,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // ============================================================
-  // CONFIGURACIÓN
-  // ============================================================
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4UlQ-VzgnvnhXmrrNuHKJczEZIvvzanM9P7H3Yx_mu1bCyWf996ESB-zNLJqRzHe1/exec';
 
-  // Cursos por preceptor
   const CURSOS_PRECEPTOR = {
     'ddepaoli@sowell.edu.ar':  ['1° A','1° B','2° A'],
     'eperez@sowell.edu.ar':    ['2° B','3° A','3° B'],
@@ -364,7 +336,6 @@
   };
   const TODOS_LOS_CURSOS = ['1° A','1° B','1° C','2° A','2° B','2° C','3° A','3° B','3° C','4° A','4° B','4° C','5° A','5° B','5° C','6° A','6° B','6° C'];
 
-  // Navegación según rol
   const NAV_POR_ROL = {
     director:  [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Calificaciones',page:'inicio'},{label:'Sanciones',page:'inicio'},{label:'Comunicados',page:'inicio'}],
     preceptor: [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Sanciones',page:'inicio'},{label:'Comunicados',page:'inicio'}],
@@ -373,13 +344,12 @@
     alumno:    [{label:'Inicio',page:'inicio'}],
   };
 
-  // ============================================================
-  // ESTADO GLOBAL
-  // ============================================================
   let usuarioActual = null;
+  let alumnosActuales = [];
+  let registro = {};
 
   // ============================================================
-  // LOGIN CON GOOGLE
+  // LOGIN
   // ============================================================
   async function handleCredentialResponse(response) {
     const loading = document.getElementById('login-loading');
@@ -387,20 +357,25 @@
     loading.style.display = 'block';
     error.style.display = 'none';
 
-    // Decodificar el token JWT de Google
-    const payload = JSON.parse(atob(response.credential.split('.')[1]));
-    const email = payload.email;
-    const nombre = payload.given_name || '';
-    const apellido = payload.family_name || '';
-    const foto = payload.picture || '';
-
-    // Verificar en el Sheets
     try {
+      const payload = JSON.parse(atob(response.credential.split('.')[1]));
+      const email = payload.email;
+      const nombre = payload.given_name || '';
+      const apellido = payload.family_name || '';
+      const foto = payload.picture || '';
+
       const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({ accion: 'verificarUsuario', email })
+      });
+
+      // Como usamos no-cors hacemos una segunda llamada con fetch normal
+      const res2 = await fetch(SCRIPT_URL, {
         method: 'POST',
         body: JSON.stringify({ accion: 'verificarUsuario', email })
       });
-      const data = await res.json();
+      const data = await res2.json();
 
       if (data.ok) {
         usuarioActual = {
@@ -420,6 +395,7 @@
       loading.style.display = 'none';
       error.style.display = 'block';
       error.textContent = '⚠️ Error de conexión. Intentá de nuevo.';
+      console.error(err);
     }
   }
 
@@ -428,49 +404,42 @@
     document.getElementById('app').style.display = 'block';
 
     const u = usuarioActual;
-    const iniciales = (u.nombre[0]||'') + (u.apellido[0]||'');
+    const iniciales = ((u.nombre[0]||'') + (u.apellido[0]||'')).toUpperCase();
 
-    // Avatar
     const avatarEl = document.getElementById('user-avatar');
     if (u.foto) {
-      avatarEl.innerHTML = `<img src="${u.foto}" alt="${u.nombre}">`;
+      avatarEl.innerHTML = '<img src="' + u.foto + '" alt="' + u.nombre + '">';
     } else {
-      avatarEl.textContent = iniciales.toUpperCase();
+      avatarEl.textContent = iniciales;
     }
     document.getElementById('user-name').textContent = u.nombre + ' ' + u.apellido;
     document.getElementById('rol-badge').textContent = u.rol;
 
-    // Saludo
     const hora = new Date().getHours();
     const saludo = hora < 12 ? 'Buenos días' : hora < 18 ? 'Buenas tardes' : 'Buenas noches';
-    document.getElementById('hero-saludo').textContent = `${saludo}, ${u.nombre} 👋`;
+    document.getElementById('hero-saludo').textContent = saludo + ', ' + u.nombre + ' 👋';
 
-    // Navegación según rol
     const nav = document.getElementById('topbar-nav');
     const items = NAV_POR_ROL[u.rol] || NAV_POR_ROL.alumno;
     nav.innerHTML = items.map((item, i) =>
-      `<button class="nav-item ${i===0?'active':''}" onclick="showPage('${item.page}',this)">${item.label}</button>`
+      '<button class="nav-item ' + (i===0?'active':'') + '" onclick="showPage(\'' + item.page + '\',this)">' + item.label + '</button>'
     ).join('');
 
-    // Cursos en asistencia según rol
     const selCurso = document.getElementById('sel-curso');
     selCurso.innerHTML = '';
-    const cursos = u.rol === 'director' ? TODOS_LOS_CURSOS : (CURSOS_PRECEPTOR[u.email] || TODOS_LOS_CURSOS);
+    const cursos = (u.rol === 'director') ? TODOS_LOS_CURSOS : (CURSOS_PRECEPTOR[u.email] || TODOS_LOS_CURSOS);
     cursos.forEach(c => {
       const opt = document.createElement('option');
       opt.value = c; opt.textContent = c;
       selCurso.appendChild(opt);
     });
 
-    // Info asistencia
-    document.getElementById('asist-avatar').textContent = iniciales.toUpperCase();
+    document.getElementById('asist-avatar').textContent = iniciales;
     document.getElementById('asist-nombre').textContent = u.nombre + ' ' + u.apellido;
-    document.getElementById('asist-sub').textContent = `Sowell · ${u.rol.charAt(0).toUpperCase() + u.rol.slice(1)}`;
+    document.getElementById('asist-sub').textContent = 'Sowell · ' + u.rol.charAt(0).toUpperCase() + u.rol.slice(1);
 
     inicializarFecha();
     inicializarCalendario();
-    const primerCurso = document.getElementById("sel-curso").value;
-  if (primerCurso) cargarAlumnos(primerCurso);
   }
 
   function cerrarSesion() {
@@ -492,6 +461,10 @@
     document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
     document.getElementById('page-' + id).classList.add('active');
     if (btn) btn.classList.add('active');
+    if (id === 'asistencia') {
+      const curso = document.getElementById('sel-curso').value;
+      if (curso) cargarAlumnos(curso);
+    }
   }
 
   // ============================================================
@@ -521,66 +494,56 @@
       const d = new Date(); d.setDate(d.getDate() + i);
       const div = document.createElement('div');
       div.className = 'cal-day' + (i === 0 ? ' today' : '');
-      div.innerHTML = `<div class="cal-day-name">${dias[d.getDay()]}</div><div class="cal-day-num">${d.getDate()}</div>`;
+      div.innerHTML = '<div class="cal-day-name">' + dias[d.getDay()] + '</div><div class="cal-day-num">' + d.getDate() + '</div>';
       cal.appendChild(div);
     }
   }
 
   // ============================================================
-  // MÓDULO ASISTENCIA
+  // ASISTENCIA
   // ============================================================
-  let alumnosActuales = [
-    {id:'AL001',nombre:'Álvarez, Martín'},{id:'AL002',nombre:'Benítez, Sofía'},
-    {id:'AL003',nombre:'Castro, Tomás'},{id:'AL004',nombre:'Díaz, Valentina'},
-    {id:'AL005',nombre:'Fernández, Lucas'},{id:'AL006',nombre:'García, Camila'},
-    {id:'AL007',nombre:'González, Mateo'},{id:'AL008',nombre:'Herrera, Florencia'},
-    {id:'AL009',nombre:'Jiménez, Agustín'},{id:'AL010',nombre:'López, Lucía'},
-    {id:'AL011',nombre:'Martínez, Franco'},{id:'AL012',nombre:'Medina, Antonella'},
-    {id:'AL013',nombre:'Morales, Santiago'},{id:'AL014',nombre:'Muñoz, Julieta'},
-    {id:'AL015',nombre:'Navarro, Ignacio'},{id:'AL016',nombre:'Ortiz, Pilar'},
-    {id:'AL017',nombre:'Pérez, Nicolás'},{id:'AL018',nombre:'Ramírez, Abril'},
-    {id:'AL019',nombre:'Reyes, Joaquín'},{id:'AL020',nombre:'Ríos, Martina'}
-  ];
-
-  // Cargar alumnos desde Sheet
   async function cargarAlumnos(curso) {
-    const cont = document.getElementById("lista-alumnos");
-    cont.innerHTML = "<div style="padding:20px;text-align:center;font-size:12px;color:var(--text3)"><i class="ti ti-loader"></i> Cargando alumnos...</div>";
+    const cont = document.getElementById('lista-alumnos');
+    cont.innerHTML = '<div class="cargando"><i class="ti ti-loader"></i> Cargando alumnos de ' + curso + '...</div>';
     registro = {};
+    actualizarStats();
+
     try {
       const res = await fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({ accion: "getAlumnosPorCurso", curso })
+        method: 'POST',
+        body: JSON.stringify({ accion: 'getAlumnosPorCurso', curso })
       });
       const data = await res.json();
-      if (data.ok && data.datos.length > 0) {
+
+      if (data.ok && data.datos && data.datos.length > 0) {
         alumnosActuales = data.datos;
-        document.getElementById("cnt-total").textContent = alumnosActuales.length;
-        const primerCurso = document.getElementById("sel-curso").value;
-  if (primerCurso) cargarAlumnos(primerCurso);
+        document.getElementById('cnt-total').textContent = alumnosActuales.length;
+        renderAsistencia();
       } else {
-        cont.innerHTML = "<div style="padding:20px;text-align:center;font-size:12px;color:var(--text3)">No se encontraron alumnos para este curso.</div>";
+        cont.innerHTML = '<div class="cargando">No se encontraron alumnos para ' + curso + '.</div>';
+        alumnosActuales = [];
       }
     } catch(err) {
-      cont.innerHTML = "<div style="padding:20px;text-align:center;font-size:12px;color:var(--red)">Error al cargar alumnos. Revisá la conexión.</div>";
+      cont.innerHTML = '<div class="cargando" style="color:var(--red)">Error al cargar alumnos. Revisá la conexión.</div>';
+      console.error(err);
     }
   }
 
   const estados = ['P','A','T','J','R','AA'];
-  let registro = {};
 
   function renderAsistencia() {
     const cont = document.getElementById('lista-alumnos');
     cont.innerHTML = '';
-    document.getElementById('cnt-total').textContent = alumnosActuales.length;
     alumnosActuales.forEach((al, i) => {
       const row = document.createElement('div');
       row.className = 'alumno-row';
-      row.innerHTML = `
-        <div class="alumno-name">${al.nombre}</div>
-        <div class="alumno-num">${String(i+1).padStart(2,'0')}</div>
-        ${estados.map(e => `<button class="estado-btn ${registro[al.id]===e?'active-'+e:''}" onclick="marcar('${al.id}','${e}')">${e}</button>`).join('')}
-      `;
+      const nombre = al.apellido + ', ' + al.nombre;
+      row.innerHTML =
+        '<div class="alumno-name">' + nombre + '</div>' +
+        '<div class="alumno-num">' + String(i+1).padStart(2,'0') + '</div>' +
+        estados.map(e =>
+          '<button class="estado-btn ' + (registro[al.id]===e ? 'active-'+e : '') + '" onclick="marcar(\'' + al.id + '\',\'' + e + '\')">' + e + '</button>'
+        ).join('');
       cont.appendChild(row);
     });
     actualizarStats();
@@ -588,8 +551,7 @@
 
   function marcar(id, estado) {
     registro[id] = registro[id] === estado ? null : estado;
-    const primerCurso = document.getElementById("sel-curso").value;
-  if (primerCurso) cargarAlumnos(primerCurso);
+    renderAsistencia();
   }
 
   function actualizarStats() {
@@ -599,13 +561,14 @@
     document.getElementById('cnt-T').textContent = vals.filter(v=>v==='T').length;
     document.getElementById('cnt-J').textContent = vals.filter(v=>v==='J').length;
     document.getElementById('cnt-otros').textContent = vals.filter(v=>v==='R'||v==='AA').length;
-    document.getElementById('footer-info').textContent = `${vals.length} de ${alumnosActuales.length} alumnos registrados`;
+    document.getElementById('footer-info').textContent = vals.length + ' de ' + alumnosActuales.length + ' alumnos registrados';
   }
 
   async function guardarAsistencia() {
+    if (alumnosActuales.length === 0) { mostrarToast('Cargá un curso primero', 'error'); return; }
     const registrados = Object.values(registro).filter(Boolean).length;
     if (registrados < alumnosActuales.length) {
-      if (!confirm(`Hay ${alumnosActuales.length - registrados} alumnos sin registrar. ¿Confirmar de todas formas?`)) return;
+      if (!confirm('Hay ' + (alumnosActuales.length - registrados) + ' alumnos sin registrar. ¿Confirmar de todas formas?')) return;
     }
     const btn = document.getElementById('btn-guardar');
     btn.disabled = true;
@@ -621,8 +584,7 @@
       await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
       mostrarToast('Asistencia guardada correctamente ✓', 'ok');
       registro = {};
-      const primerCurso = document.getElementById("sel-curso").value;
-  if (primerCurso) cargarAlumnos(primerCurso);
+      renderAsistencia();
     } catch(err) {
       mostrarToast('Error al guardar. Revisá la conexión.', 'error');
     } finally {
