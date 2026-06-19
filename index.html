@@ -326,14 +326,11 @@
 <script>
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4UlQ-VzgnvnhXmrrNuHKJczEZIvvzanM9P7H3Yx_mu1bCyWf996ESB-zNLJqRzHe1/exec';
 
-  const CURSOS_PRECEPTOR = {
-    'ddepaoli@sowell.edu.ar':  ['1° A','1° B','2° A'],
-    'eperez@sowell.edu.ar':    ['2° B','3° A','3° B'],
-    'dperez@sowell.edu.ar':    ['4° A','4° B','5° A'],
-    'flarroude@sowell.edu.ar': ['5° B','6° A','6° B'],
-    'camaro@sowell.edu.ar':    ['1° C','2° C','3° C'],
-    'pcanon@sowell.edu.ar':    ['4° C','5° C','6° C'],
-  };
+  // Lista completa de cursos (se usa para directores, que ven todo).
+  // Los preceptores ahora reciben SU lista de cursos directamente desde
+  // el Apps Script (campo "cursos" de la hoja "usuarios"), no de una
+  // tabla hardcodeada acá. Esto evita que un email mal escrito o un
+  // preceptor nuevo termine viendo todos los cursos por error.
   const TODOS_LOS_CURSOS = ['1° A','1° B','1° C','2° A','2° B','2° C','3° A','3° B','3° C','4° A','4° B','4° C','5° A','5° B','5° C','6° A','6° B','6° C'];
 
   const NAV_POR_ROL = {
@@ -347,6 +344,19 @@
   let usuarioActual = null;
   let alumnosActuales = [];
   let registro = {};
+
+  // ============================================================
+  // UTILIDADES
+  // ============================================================
+  // Convierte el formato del Sheet ("1A", "2B", " 1 A ") al formato
+  // que usa el selector de curso en el HTML ("1° A", "2° B").
+  // Si ya viene en formato "1° A" lo deja igual.
+  function normalizarCurso(c) {
+    const limpio = String(c).trim();
+    const match = limpio.match(/^(\d+)\s*°?\s*([A-Za-z])$/);
+    if (match) return match[1] + '° ' + match[2].toUpperCase();
+    return limpio;
+  }
 
   // ============================================================
   // LOGIN
@@ -364,13 +374,6 @@
       const apellido = payload.family_name || '';
       const foto = payload.picture || '';
 
-      const res = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify({ accion: 'verificarUsuario', email })
-      });
-
-      // Como usamos no-cors hacemos una segunda llamada con fetch normal
       const res2 = await fetch(SCRIPT_URL, {
         method: 'POST',
         body: JSON.stringify({ accion: 'verificarUsuario', email })
@@ -425,14 +428,35 @@
       '<button class="nav-item ' + (i===0?'active':'') + '" onclick="showPage(\'' + item.page + '\',this)">' + item.label + '</button>'
     ).join('');
 
+    // Cursos por usuario:
+    // - director ve TODOS_LOS_CURSOS
+    // - cualquier otro rol ve únicamente lo que vino en u.cursos
+    //   (campo "cursos" de la hoja "usuarios" en el Sheet), normalizado
+    //   al formato "1° A". Si no tiene cursos asignados, ve la lista vacía
+    //   en vez de caer por error en "todos los cursos".
     const selCurso = document.getElementById('sel-curso');
     selCurso.innerHTML = '';
-    const cursos = (u.rol === 'director') ? TODOS_LOS_CURSOS : (CURSOS_PRECEPTOR[u.email] || TODOS_LOS_CURSOS);
-    cursos.forEach(c => {
+    let cursos;
+    if (u.rol === 'director') {
+      cursos = TODOS_LOS_CURSOS;
+    } else if (u.cursos) {
+      cursos = String(u.cursos).split(',').map(c => normalizarCurso(c));
+    } else {
+      cursos = [];
+    }
+
+    if (cursos.length === 0) {
       const opt = document.createElement('option');
-      opt.value = c; opt.textContent = c;
+      opt.value = '';
+      opt.textContent = 'Sin cursos asignados';
       selCurso.appendChild(opt);
-    });
+    } else {
+      cursos.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c;
+        selCurso.appendChild(opt);
+      });
+    }
 
     document.getElementById('asist-avatar').textContent = iniciales;
     document.getElementById('asist-nombre').textContent = u.nombre + ' ' + u.apellido;
@@ -503,6 +527,7 @@
   // ASISTENCIA
   // ============================================================
   async function cargarAlumnos(curso) {
+    if (!curso) return;
     const cont = document.getElementById('lista-alumnos');
     cont.innerHTML = '<div class="cargando"><i class="ti ti-loader"></i> Cargando alumnos de ' + curso + '...</div>';
     registro = {};
