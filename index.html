@@ -133,6 +133,36 @@
     .toast.ok { background: var(--green); }
     .toast.error { background: var(--red); }
     footer { text-align: center; padding: 24px; font-size: 11px; color: var(--text3); border-top: 0.5px solid var(--border); background: var(--surface); }
+    /* CALIFICACIONES */
+    .calif-tabla-wrap { overflow-x: auto; }
+    .calif-tabla { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .calif-tabla th { background: var(--surface2); color: var(--text2); font-weight: 500; padding: 8px 10px; text-align: center; border-bottom: 1px solid var(--border2); white-space: nowrap; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .calif-tabla th:first-child { text-align: left; }
+    .calif-tabla td { padding: 7px 8px; border-bottom: 0.5px solid var(--border); text-align: center; vertical-align: middle; }
+    .calif-tabla td:first-child { text-align: left; font-weight: 500; font-size: 13px; white-space: nowrap; }
+    .calif-tabla tr:last-child td { border-bottom: none; }
+    .calif-tabla tr:hover td { background: var(--navy-light); }
+    .nota-input { width: 54px; border: 0.5px solid var(--border); border-radius: 6px; padding: 5px 4px; font-size: 13px; font-family: 'DM Sans', sans-serif; text-align: center; background: var(--surface); color: var(--text); outline: none; transition: border-color 0.12s; }
+    .nota-input:focus { border-color: var(--navy-mid); }
+    .nota-input:disabled { background: var(--surface2); color: var(--text3); cursor: not-allowed; }
+    .nota-input.error { border-color: var(--red); background: var(--red-light); }
+    .nota-input.calculada { background: var(--navy-light); color: var(--navy); font-weight: 500; border-color: var(--navy-mid); cursor: not-allowed; }
+    .nota-tea { background: var(--green-light); color: var(--green-dark); border-color: var(--green); font-weight: 500; }
+    .nota-tep { background: var(--amber-light); color: var(--amber-dark); border-color: var(--amber); font-weight: 500; }
+    .nota-ted { background: var(--red-light); color: #501313; border-color: var(--red); font-weight: 500; }
+    .sel-informe { width: 64px; border: 0.5px solid var(--border); border-radius: 6px; padding: 5px 2px; font-size: 12px; font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--text); outline: none; }
+    .sel-informe:focus { border-color: var(--navy-mid); }
+    .calif-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .calif-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; font-size: 11px; color: var(--text2); align-items: center; }
+    .chip-tea { background: var(--green-light); color: var(--green-dark); padding: 2px 8px; border-radius: 6px; font-weight: 500; font-size: 11px; }
+    .chip-tep { background: var(--amber-light); color: var(--amber-dark); padding: 2px 8px; border-radius: 6px; font-weight: 500; font-size: 11px; }
+    .chip-ted { background: var(--red-light); color: #501313; padding: 2px 8px; border-radius: 6px; font-weight: 500; font-size: 11px; }
+    .chip-calc { background: var(--navy-light); color: var(--navy); padding: 2px 8px; border-radius: 6px; font-weight: 500; font-size: 11px; }
+    .alerta-row td { background: #FFF8E1 !important; }
+    .estado-calif { font-size: 10px; padding: 2px 7px; border-radius: 8px; font-weight: 500; white-space: nowrap; }
+    .estado-aprobado { background: var(--green-light); color: var(--green-dark); }
+    .estado-intensif { background: var(--amber-light); color: var(--amber-dark); }
+    .estado-pendiente { background: var(--surface2); color: var(--text3); }
     @media (max-width: 720px) {
       .topbar-nav { display: none; }
       .content { grid-template-columns: 1fr; padding: 16px; }
@@ -313,13 +343,57 @@
       <div id="lista-alumnos"><div class="cargando">Seleccioná un curso para cargar los alumnos</div></div>
       <div class="modulo-footer">
         <div class="modulo-footer-info" id="footer-info">0 alumnos registrados</div>
-        <button class="btn-guardar" id="btn-guardar" onclick="guardarAsistencia()"><i class="ti ti-device-floppy"></i> Confirmar y guardar</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn-guardar" id="btn-reporte" onclick="descargarReporteInasistencias()" style="background:var(--surface2);color:var(--text2);border:0.5px solid var(--border)" title="Descarga un Excel con el cómputo de inasistencias según el Régimen Académico (Res. 1650/24)"><i class="ti ti-file-spreadsheet"></i> Reporte inasistencias</button>
+          <button class="btn-guardar" id="btn-guardar" onclick="guardarAsistencia()"><i class="ti ti-device-floppy"></i> Confirmar y guardar</button>
+        </div>
       </div>
     </div>
   </div>
 
   <footer><p>© 2026 Sowell · <a href="mailto:info@sowell.edu.ar" style="color:var(--navy-mid);text-decoration:none">info@sowell.edu.ar</a> · portal.sowell.edu.ar</p></footer>
 </div>
+
+  <!-- CALIFICACIONES -->
+  <div id="page-calificaciones" class="page">
+    <div class="modulo-wrap">
+      <div class="modulo-topbar">
+        <div style="display:flex;align-items:center;gap:10px">
+          <i class="ti ti-report-analytics" style="color:#fff;font-size:20px"></i>
+          <div><div class="modulo-title">Calificaciones</div><div class="modulo-sub" id="calif-sub">Sowell · Secundaria</div></div>
+        </div>
+        <div class="user-pill" style="cursor:default">
+          <div class="user-avatar" id="calif-avatar">?</div>
+          <span class="user-name" id="calif-nombre">Cargando...</span>
+        </div>
+      </div>
+
+      <div class="calif-controls">
+        <div class="ctrl-card">
+          <div class="ctrl-label">Curso</div>
+          <select id="cal-sel-curso" onchange="onCursoCalifChange(this.value)"></select>
+        </div>
+        <div class="ctrl-card">
+          <div class="ctrl-label">Materia</div>
+          <select id="cal-sel-materia" onchange="cargarCalificaciones()"></select>
+        </div>
+      </div>
+
+      <div class="calif-legend">
+        <span><span class="chip-tea">TEA</span> Trayecto En Avance</span>
+        <span><span class="chip-tep">TEP</span> Trayecto En Proceso</span>
+        <span><span class="chip-ted">TED</span> Trayecto En Desarrollo</span>
+        <span><span class="chip-calc">Auto</span> Calculado por el portal</span>
+      </div>
+
+      <div id="calif-contenido"><div class="cargando">Seleccioná un curso y una materia para ver las calificaciones</div></div>
+
+      <div class="modulo-footer" id="calif-footer" style="display:none">
+        <div class="modulo-footer-info" id="calif-footer-info"></div>
+        <button class="btn-guardar" id="btn-guardar-calif" onclick="guardarCalificaciones()"><i class="ti ti-device-floppy"></i> Guardar calificaciones</button>
+      </div>
+    </div>
+  </div>
 
 <div class="toast" id="toast"></div>
 
@@ -334,9 +408,9 @@
   const TODOS_LOS_CURSOS = ['1° A','1° B','1° C','2° A','2° B','2° C','3° A','3° B','3° C','4° A','4° B','4° C','5° A','5° B','5° C','6° A','6° B','6° C'];
 
   const NAV_POR_ROL = {
-    director:  [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Calificaciones',page:'inicio'},{label:'Sanciones',page:'inicio'},{label:'Comunicados',page:'inicio'}],
+    director:  [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Calificaciones',page:'calificaciones'},{label:'Sanciones',page:'inicio'},{label:'Comunicados',page:'inicio'}],
     preceptor: [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Sanciones',page:'inicio'},{label:'Comunicados',page:'inicio'}],
-    docente:   [{label:'Inicio',page:'inicio'},{label:'Calificaciones',page:'inicio'}],
+    docente:   [{label:'Inicio',page:'inicio'},{label:'Calificaciones',page:'calificaciones'}],
     familia:   [{label:'Inicio',page:'inicio'}],
     alumno:    [{label:'Inicio',page:'inicio'}],
   };
@@ -461,6 +535,12 @@
     document.getElementById('asist-avatar').textContent = iniciales;
     document.getElementById('asist-nombre').textContent = u.nombre + ' ' + u.apellido;
     document.getElementById('asist-sub').textContent = 'Sowell · ' + u.rol.charAt(0).toUpperCase() + u.rol.slice(1);
+
+    // Inicializar selectores de calificaciones
+    document.getElementById('calif-avatar').textContent = iniciales;
+    document.getElementById('calif-nombre').textContent = u.nombre + ' ' + u.apellido;
+    document.getElementById('calif-sub').textContent = 'Sowell · ' + u.rol.charAt(0).toUpperCase() + u.rol.slice(1);
+    inicializarSelectoresCalif();
 
     inicializarFecha();
     inicializarCalendario();
@@ -624,6 +704,333 @@
     t.className = 'toast ' + tipo;
     t.style.display = 'block';
     setTimeout(() => t.style.display = 'none', 3500);
+  }
+
+  // ============================================================
+  // CALIFICACIONES
+  // ============================================================
+
+  // Mapa completo de materias por curso (espeja el Apps Script)
+  const MATERIAS_POR_CURSO = {
+    '1° A': ['Ciencias Naturales','Ciencias Sociales','Educación Artística','Educación Física','Inglés','Matemática','Práct. del Lenguaje','Const. Ciudadanía'],
+    '1° B': ['Ciencias Naturales','Ciencias Sociales','Educación Artística','Educación Física','Inglés','Matemática','Práct. del Lenguaje','Const. Ciudadanía'],
+    '1° C': ['Ciencias Naturales','Ciencias Sociales','Educación Artística','Educación Física','Inglés','Matemática','Práct. del Lenguaje','Const. Ciudadanía'],
+    '2° A': ['Biología','Const. Ciudadanía','Educación Artística','Educación Física','Físico-Química','Geografía','Historia','Inglés','Matemática','Práct. del Lenguaje'],
+    '2° B': ['Biología','Const. Ciudadanía','Educación Artística','Educación Física','Físico-Química','Geografía','Historia','Inglés','Matemática','Práct. del Lenguaje'],
+    '2° C': ['Biología','Const. Ciudadanía','Educación Artística','Educación Física','Físico-Química','Geografía','Historia','Inglés','Matemática','Práct. del Lenguaje'],
+    '3° A': ['Biología','Const. Ciudadanía','Educación Artística','Educación Física','Físico-Química','Geografía','Historia','Inglés','Matemática','Práct. del Lenguaje'],
+    '3° B': ['Biología','Const. Ciudadanía','Educación Artística','Educación Física','Físico-Química','Geografía','Historia','Inglés','Matemática','Práct. del Lenguaje'],
+    '3° C': ['Biología','Const. Ciudadanía','Educación Artística','Educación Física','Físico-Química','Geografía','Historia','Inglés','Matemática','Práct. del Lenguaje'],
+    '4° A': ['Literatura','Matemática','Educ. Física','Inglés','NTICX','Salud y Adolescencia','Introducción a la Física','Biología','Historia','Geografía','Psicología'],
+    '4° B': ['Literatura','Matemática','Educ. Física','Inglés','NTICX','Salud y Adolescencia','Introducción a la Física','Biología','Historia','Geografía','Psicología'],
+    '4° C': ['Literatura','Matemática','Educ. Física','Inglés','NTICX','Salud y Adol.','Int. a la Física','Biología','Historia','Geografía','Sistemas de Información Contable','Teoría de las Organizaciones'],
+    '5° A': ['Literatura','Matemática','Educación Física','Inglés','Política y Ciudadanía','Introducción a la Química','Historia','Geografía','Comunicación, Cultura y Sociedad','Economía Política','Sociología'],
+    '5° B': ['Literatura','Matemática','Educación Física','Inglés','Política y Ciudadanía','Introducción a la Química','Historia','Geografía','Comunicación, Cultura y Sociedad','Economía Política','Sociología'],
+    '5° C': ['Literatura','Matemática','Educación Física','Inglés','Política y Ciud.','Int. a la Química','Historia','Geografía','Elementos de Macro y Micro Economía','Derecho','Gestión Organizacional','Sistemas de Información Contable II'],
+    '6° A': ['Literatura','Matemática','Educación Física','Inglés','Trabajo y Ciudadanía','Geografía','Historia','Proyecto de Investigación','Arte','Filosofía'],
+    '6° B': ['Literatura','Matemática','Educación Física','Inglés','Trabajo y Ciudadanía','Geografía','Historia','Proyecto de Investigación','Arte','Filosofía'],
+    '6° C': ['Literatura','Matemática','Educación Física','Inglés','Trabajo y Ciud.','Proyecto Organizacional','Economía Política','Arte','Filosofía']
+  };
+
+  const INSTANCIAS = [
+    { id: 'inf1',    label: '1er Inf. Medio',    tipo: 'informe' },
+    { id: 'cuat1',   label: '1er Cuatrimestre',  tipo: 'entero'  },
+    { id: 'inf2',    label: '2do Inf. Medio',    tipo: 'informe' },
+    { id: 'cuat2',   label: '2do Cuatrimestre',  tipo: 'entero'  },
+    { id: 'anual',   label: 'Calif. Anual',      tipo: 'calc'    },
+    { id: 'intdic',  label: 'Intensif. Dic.',    tipo: 'entero'  },
+    { id: 'intfeb',  label: 'Intensif. Feb/Mar', tipo: 'entero'  },
+    { id: 'defin',   label: 'Calif. Definitiva', tipo: 'calc'    },
+  ];
+
+  let califActuales = []; // alumnos del curso actual
+  let califRegistro = {}; // { id_alumno: { inf1, cuat1, inf2, cuat2, intdic, intfeb } }
+
+  function inicializarSelectoresCalif() {
+    const u = usuarioActual;
+    const selCurso = document.getElementById('cal-sel-curso');
+    selCurso.innerHTML = '';
+
+    let cursos;
+    if (u.rol === 'director') {
+      cursos = TODOS_LOS_CURSOS;
+    } else if (u.cursos) {
+      // Para docentes: el campo cursos viene como "Matemática:1A, Matemática:2B"
+      // Extraemos solo la parte del curso y normalizamos
+      cursos = String(u.cursos).split(',').map(c => {
+        const partes = c.trim().split(':');
+        return normalizarCurso(partes.length > 1 ? partes[1].trim() : partes[0].trim());
+      }).filter((v, i, a) => a.indexOf(v) === i); // deduplicar
+    } else {
+      cursos = [];
+    }
+
+    if (cursos.length === 0) {
+      const opt = document.createElement('option');
+      opt.value = ''; opt.textContent = 'Sin cursos asignados';
+      selCurso.appendChild(opt);
+    } else {
+      cursos.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c;
+        selCurso.appendChild(opt);
+      });
+      // Cargar materias del primer curso
+      onCursoCalifChange(cursos[0]);
+    }
+  }
+
+  function getMateriaDocente(curso) {
+    // Para docentes: extraer la materia que le corresponde a este curso específico
+    // del campo cursos: "Matemática:1A, Matemática:2B"
+    const u = usuarioActual;
+    if (u.rol === 'director') return null; // director ve todas
+    if (!u.cursos) return null;
+    const entries = String(u.cursos).split(',');
+    for (const entry of entries) {
+      const partes = entry.trim().split(':');
+      if (partes.length === 2) {
+        const materia = partes[0].trim();
+        const cursoParte = normalizarCurso(partes[1].trim());
+        if (cursoParte === curso) return materia;
+      }
+    }
+    return null; // si no tiene formato materia:curso, ve todas
+  }
+
+  function onCursoCalifChange(curso) {
+    const selMateria = document.getElementById('cal-sel-materia');
+    selMateria.innerHTML = '';
+    const todasMaterias = MATERIAS_POR_CURSO[curso] || [];
+    const materiaDocente = getMateriaDocente(curso);
+
+    const materias = materiaDocente ? [materiaDocente] : todasMaterias;
+
+    if (materias.length === 0) {
+      const opt = document.createElement('option');
+      opt.value = ''; opt.textContent = 'Sin materias';
+      selMateria.appendChild(opt);
+    } else {
+      materias.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m; opt.textContent = m;
+        selMateria.appendChild(opt);
+      });
+    }
+    cargarCalificaciones();
+  }
+
+  async function cargarCalificaciones() {
+    const curso = document.getElementById('cal-sel-curso').value;
+    const materia = document.getElementById('cal-sel-materia').value;
+    if (!curso || !materia) return;
+
+    const cont = document.getElementById('calif-contenido');
+    cont.innerHTML = '<div class="cargando"><i class="ti ti-loader"></i> Cargando...</div>';
+    document.getElementById('calif-footer').style.display = 'none';
+    califRegistro = {};
+
+    try {
+      // Cargar alumnos del curso y calificaciones existentes en paralelo
+      const [resAlumnos, resCalif] = await Promise.all([
+        fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ accion: 'getAlumnosPorCurso', curso }) }).then(r => r.json()),
+        fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ accion: 'getCalificacionesPorCursoMateria', curso, materia }) }).then(r => r.json())
+      ]);
+
+      if (!resAlumnos.ok || !resAlumnos.datos || resAlumnos.datos.length === 0) {
+        cont.innerHTML = '<div class="cargando">No se encontraron alumnos para ' + curso + '.</div>';
+        return;
+      }
+
+      califActuales = resAlumnos.datos;
+
+      // Construir registro inicial desde las calificaciones existentes
+      const califExistentes = resCalif.ok ? (resCalif.datos || []) : [];
+      califActuales.forEach(al => {
+        califRegistro[al.id] = { inf1: '', cuat1: '', inf2: '', cuat2: '', intdic: '', intfeb: '' };
+        const instanciaMap = { '1er Informe Medio': 'inf1', '1er Cuatrimestre': 'cuat1', '2do Informe Medio': 'inf2', '2do Cuatrimestre': 'cuat2', 'Intensificación Diciembre': 'intdic', 'Intensificación Feb/Mar': 'intfeb' };
+        califExistentes.filter(c => String(c.id_alumno) === String(al.id)).forEach(c => {
+          const key = instanciaMap[c.instancia];
+          if (key) califRegistro[al.id][key] = String(c.nota);
+        });
+      });
+
+      renderCalificaciones(curso, materia);
+      document.getElementById('calif-footer').style.display = 'flex';
+      document.getElementById('calif-footer-info').textContent = califActuales.length + ' alumnos · ' + materia + ' · ' + curso;
+
+    } catch(err) {
+      cont.innerHTML = '<div class="cargando" style="color:var(--red)">Error al cargar. Revisá la conexión.</div>';
+      console.error(err);
+    }
+  }
+
+  function calcularAnual(cuat1, cuat2) {
+    const c1 = parseFloat(cuat1);
+    const c2 = parseFloat(cuat2);
+    if (isNaN(c1) || isNaN(c2)) return '';
+    // Si ambos >= 7: promedio con 1 decimal
+    if (c1 >= 7 && c2 >= 7) return (Math.round((c1 + c2) / 2 * 10) / 10).toString();
+    // Si alguno < 7: TEP
+    return 'TEP';
+  }
+
+  function calcularDefinitiva(cuat1, cuat2, intdic, intfeb) {
+    const anual = calcularAnual(cuat1, cuat2);
+    if (!anual) return '';
+    // Aprobó directo
+    if (anual !== 'TEP') return anual;
+    // Fue a intensificación
+    const dic = parseFloat(intdic);
+    if (!isNaN(dic) && intdic !== '') return String(dic);
+    const feb = parseFloat(intfeb);
+    if (!isNaN(feb) && intfeb !== '') return String(feb);
+    return 'Pendiente';
+  }
+
+  function claseNota(val) {
+    if (val === 'TEA') return 'nota-tea';
+    if (val === 'TEP') return 'nota-tep';
+    if (val === 'TED') return 'nota-ted';
+    return '';
+  }
+
+  function estadoAlumno(cuat1, cuat2, intdic, intfeb) {
+    const anual = calcularAnual(cuat1, cuat2);
+    if (!anual) return { label: 'Sin notas', clase: 'estado-pendiente' };
+    if (anual !== 'TEP') return { label: 'Aprobado', clase: 'estado-aprobado' };
+    const dic = parseFloat(intdic);
+    if (!isNaN(dic) && intdic !== '') return dic >= 4 ? { label: 'Aprobado (Dic.)', clase: 'estado-aprobado' } : { label: 'A Feb/Mar', clase: 'estado-intensif' };
+    const feb = parseFloat(intfeb);
+    if (!isNaN(feb) && intfeb !== '') return feb >= 4 ? { label: 'Aprobado (Feb)', clase: 'estado-aprobado' } : { label: 'Desaprobado', clase: 'estado-ted' };
+    return { label: 'A intensif.', clase: 'estado-intensif' };
+  }
+
+  function onNotaChange(idAlumno, campo, val) {
+    califRegistro[idAlumno][campo] = val.trim().toUpperCase();
+    // Re-renderizar solo las celdas calculadas de esa fila
+    const anual = calcularAnual(califRegistro[idAlumno].cuat1, califRegistro[idAlumno].cuat2);
+    const defin = calcularDefinitiva(califRegistro[idAlumno].cuat1, califRegistro[idAlumno].cuat2, califRegistro[idAlumno].intdic, califRegistro[idAlumno].intfeb);
+    const est = estadoAlumno(califRegistro[idAlumno].cuat1, califRegistro[idAlumno].cuat2, califRegistro[idAlumno].intdic, califRegistro[idAlumno].intfeb);
+
+    const anualEl = document.getElementById('anual-' + idAlumno);
+    const definEl = document.getElementById('defin-' + idAlumno);
+    const estEl = document.getElementById('est-' + idAlumno);
+    if (anualEl) { anualEl.value = anual; anualEl.className = 'nota-input calculada ' + claseNota(anual); }
+    if (definEl) { definEl.value = defin; definEl.className = 'nota-input calculada ' + claseNota(defin); }
+    if (estEl) { estEl.textContent = est.label; estEl.className = 'estado-calif ' + est.clase; }
+  }
+
+  function renderCalificaciones(curso, materia) {
+    const cont = document.getElementById('calif-contenido');
+
+    let html = '<div class="calif-tabla-wrap"><table class="calif-tabla"><thead><tr>';
+    html += '<th>Alumno</th>';
+    INSTANCIAS.forEach(inst => { html += '<th>' + inst.label + '</th>'; });
+    html += '<th>Estado</th></tr></thead><tbody>';
+
+    califActuales.forEach(al => {
+      const r = califRegistro[al.id];
+      const anual = calcularAnual(r.cuat1, r.cuat2);
+      const defin = calcularDefinitiva(r.cuat1, r.cuat2, r.intdic, r.intfeb);
+      const est = estadoAlumno(r.cuat1, r.cuat2, r.intdic, r.intfeb);
+      const necesitaIntensif = anual === 'TEP';
+
+      html += '<tr>';
+      html += '<td>' + al.apellido + ', ' + al.nombre + '</td>';
+
+      INSTANCIAS.forEach(inst => {
+        if (inst.tipo === 'informe') {
+          const val = r[inst.id] || '';
+          html += '<td><select class="sel-informe ' + claseNota(val) + '" onchange="onNotaChange(\'' + al.id + '\',\'' + inst.id + '\',this.value)">';
+          ['','TEA','TEP','TED'].forEach(op => {
+            html += '<option value="' + op + '" ' + (val === op ? 'selected' : '') + '>' + (op || '—') + '</option>';
+          });
+          html += '</select></td>';
+        } else if (inst.tipo === 'calc') {
+          const val = inst.id === 'anual' ? anual : defin;
+          html += '<td><input id="' + inst.id + '-' + al.id + '" class="nota-input calculada ' + claseNota(val) + '" value="' + val + '" disabled></td>';
+        } else {
+          // entero — intdic e intfeb solo se habilitan si necesita intensificación
+          const esIntensif = inst.id === 'intdic' || inst.id === 'intfeb';
+          const deshabilitado = esIntensif && !necesitaIntensif;
+          const val = deshabilitado ? '' : (r[inst.id] || '');
+          html += '<td><input class="nota-input" type="number" min="1" max="10" step="1" value="' + val + '" ' + (deshabilitado ? 'disabled placeholder="—"' : 'placeholder="—"') + ' oninput="validarEntero(this,' + (esIntensif ? '4' : '1') + ',10)" onchange="onNotaChange(\'' + al.id + '\',\'' + inst.id + '\',this.value)"></td>';
+        }
+      });
+
+      html += '<td><span id="est-' + al.id + '" class="estado-calif ' + est.clase + '">' + est.label + '</span></td>';
+      html += '</tr>';
+    });
+
+    html += '</tbody></table></div>';
+    cont.innerHTML = html;
+  }
+
+  function validarEntero(input, min, max) {
+    const val = parseFloat(input.value);
+    if (input.value === '') { input.classList.remove('error'); return; }
+    if (isNaN(val) || val < min || val > max || !Number.isInteger(val)) {
+      input.classList.add('error');
+    } else {
+      input.classList.remove('error');
+    }
+  }
+
+  async function guardarCalificaciones() {
+    const curso = document.getElementById('cal-sel-curso').value;
+    const materia = document.getElementById('cal-sel-materia').value;
+    if (!curso || !materia || califActuales.length === 0) { mostrarToast('Seleccioná curso y materia primero', 'error'); return; }
+
+    // Verificar que no haya errores de validación
+    if (document.querySelector('.nota-input.error')) { mostrarToast('Corregí las notas en rojo antes de guardar', 'error'); return; }
+
+    const btn = document.getElementById('btn-guardar-calif');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ti ti-loader"></i> Guardando...';
+
+    const registros = [];
+    const instanciaLabel = { inf1: '1er Informe Medio', cuat1: '1er Cuatrimestre', inf2: '2do Informe Medio', cuat2: '2do Cuatrimestre', intdic: 'Intensificación Diciembre', intfeb: 'Intensificación Feb/Mar' };
+
+    califActuales.forEach(al => {
+      const r = califRegistro[al.id];
+      Object.entries(instanciaLabel).forEach(([key, label]) => {
+        if (r[key] !== '' && r[key] !== null && r[key] !== undefined) {
+          registros.push({
+            id_alumno: al.id,
+            materia,
+            curso,
+            docente: usuarioActual ? usuarioActual.nombre + ' ' + usuarioActual.apellido : 'Sistema',
+            instancia: label,
+            nota: r[key]
+          });
+        }
+      });
+      // Guardar también calculadas
+      const anual = calcularAnual(r.cuat1, r.cuat2);
+      const defin = calcularDefinitiva(r.cuat1, r.cuat2, r.intdic, r.intfeb);
+      if (anual) registros.push({ id_alumno: al.id, materia, curso, docente: usuarioActual ? usuarioActual.nombre + ' ' + usuarioActual.apellido : 'Sistema', instancia: 'Calificación Anual', nota: anual });
+      if (defin && defin !== 'Pendiente') registros.push({ id_alumno: al.id, materia, curso, docente: usuarioActual ? usuarioActual.nombre + ' ' + usuarioActual.apellido : 'Sistema', instancia: 'Calificación Definitiva', nota: defin });
+    });
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ accion: 'guardarCalificacionesLote', registros })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        mostrarToast('Calificaciones guardadas correctamente ✓', 'ok');
+      } else {
+        mostrarToast('Error al guardar: ' + data.mensaje, 'error');
+      }
+    } catch(err) {
+      mostrarToast('Error de conexión. Intentá de nuevo.', 'error');
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ti ti-device-floppy"></i> Guardar calificaciones';
+    }
   }
 </script>
 </body>
