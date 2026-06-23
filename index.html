@@ -163,6 +163,31 @@
     .estado-aprobado { background: var(--green-light); color: var(--green-dark); }
     .estado-intensif { background: var(--amber-light); color: var(--amber-dark); }
     .estado-pendiente { background: var(--surface2); color: var(--text3); }
+    /* COMUNICADOS */
+    .com-form { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
+    .com-field { margin-bottom: 14px; }
+    .com-label { font-size: 11px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block; }
+    .com-input { width: 100%; border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 9px 12px; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; transition: border-color 0.12s; background: var(--surface); }
+    .com-input:focus { border-color: var(--navy-mid); }
+    .com-textarea { width: 100%; border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 9px 12px; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; resize: vertical; min-height: 120px; transition: border-color 0.12s; background: var(--surface); }
+    .com-textarea:focus { border-color: var(--navy-mid); }
+    .com-select { width: 100%; border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 9px 12px; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; background: var(--surface); }
+    .com-select:focus { border-color: var(--navy-mid); }
+    .com-dest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .com-preview { background: var(--navy-light); border: 0.5px solid var(--navy-mid); border-radius: var(--radius); padding: 12px 14px; font-size: 12px; color: var(--navy); margin-bottom: 14px; }
+    .com-preview strong { display: block; margin-bottom: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .com-historial { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .com-historial-header { padding: 12px 16px; border-bottom: 0.5px solid var(--border); font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; }
+    .com-item { padding: 14px 16px; border-bottom: 0.5px solid var(--border); }
+    .com-item:last-child { border-bottom: none; }
+    .com-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; gap: 10px; }
+    .com-item-titulo { font-size: 13px; font-weight: 500; color: var(--text); }
+    .com-item-meta { font-size: 11px; color: var(--text3); white-space: nowrap; }
+    .com-item-cuerpo { font-size: 12px; color: var(--text2); line-height: 1.5; margin-top: 4px; }
+    .com-badge { font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: 500; }
+    .com-badge-familias { background: var(--green-light); color: var(--green-dark); }
+    .com-badge-docentes { background: var(--blue-light); color: #0C447C; }
+    .com-badge-personal { background: var(--purple-light); color: #26215C; }
     @media (max-width: 720px) {
       .topbar-nav { display: none; }
       .content { grid-template-columns: 1fr; padding: 16px; }
@@ -397,6 +422,75 @@
 
 <div class="toast" id="toast"></div>
 
+  <!-- COMUNICADOS -->
+  <div id="page-comunicados" class="page">
+    <div class="modulo-wrap">
+      <div class="modulo-topbar">
+        <div style="display:flex;align-items:center;gap:10px">
+          <i class="ti ti-speakerphone" style="color:#fff;font-size:20px"></i>
+          <div><div class="modulo-title">Comunicados</div><div class="modulo-sub" id="com-sub">Sowell · Secundaria</div></div>
+        </div>
+        <div class="user-pill" style="cursor:default">
+          <div class="user-avatar" id="com-avatar">?</div>
+          <span class="user-name" id="com-nombre">Cargando...</span>
+        </div>
+      </div>
+
+      <!-- FORMULARIO -->
+      <div class="com-form">
+        <p class="section-title" style="margin-bottom:14px">Nuevo comunicado</p>
+
+        <div class="com-dest-grid" style="margin-bottom:14px">
+          <div class="com-field" style="margin-bottom:0">
+            <label class="com-label">Tipo de destinatario</label>
+            <select class="com-select" id="com-tipo-dest" onchange="onTipoDestChange()">
+              <option value="">— Seleccioná —</option>
+            </select>
+          </div>
+          <div class="com-field" style="margin-bottom:0" id="com-campo-curso-wrap" style="display:none">
+            <label class="com-label">Curso</label>
+            <select class="com-select" id="com-sel-curso" onchange="onCursoComChange()">
+              <option value="">— Todos los cursos —</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="com-field" id="com-campo-alumno-wrap" style="display:none">
+          <label class="com-label">Alumno (búsqueda)</label>
+          <input class="com-input" type="text" id="com-buscar-alumno" placeholder="Escribí apellido o nombre..." oninput="buscarAlumnoComm(this.value)">
+          <div id="com-resultados-alumno" style="margin-top:6px"></div>
+        </div>
+
+        <div class="com-preview" id="com-preview">
+          <strong>Destinatarios</strong>
+          <span id="com-preview-texto">—</span>
+        </div>
+
+        <div class="com-field">
+          <label class="com-label">Asunto</label>
+          <input class="com-input" type="text" id="com-asunto" placeholder="Ej: Reunión de padres — 3° año">
+        </div>
+
+        <div class="com-field">
+          <label class="com-label">Mensaje</label>
+          <textarea class="com-textarea" id="com-cuerpo" placeholder="Escribí el comunicado acá..."></textarea>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end">
+          <button class="btn-guardar" id="btn-enviar-com" onclick="enviarComunicado()">
+            <i class="ti ti-send"></i> Enviar comunicado
+          </button>
+        </div>
+      </div>
+
+      <!-- HISTORIAL -->
+      <p class="section-title">Comunicados enviados</p>
+      <div class="com-historial" id="com-historial">
+        <div class="cargando">Cargando historial...</div>
+      </div>
+    </div>
+  </div>
+
 <script>
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4UlQ-VzgnvnhXmrrNuHKJczEZIvvzanM9P7H3Yx_mu1bCyWf996ESB-zNLJqRzHe1/exec';
 
@@ -408,9 +502,9 @@
   const TODOS_LOS_CURSOS = ['1° A','1° B','1° C','2° A','2° B','2° C','3° A','3° B','3° C','4° A','4° B','4° C','5° A','5° B','5° C','6° A','6° B','6° C'];
 
   const NAV_POR_ROL = {
-    director:  [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Calificaciones',page:'calificaciones'},{label:'Sanciones',page:'inicio'},{label:'Comunicados',page:'inicio'}],
-    preceptor: [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Sanciones',page:'inicio'},{label:'Comunicados',page:'inicio'}],
-    docente:   [{label:'Inicio',page:'inicio'},{label:'Calificaciones',page:'calificaciones'}],
+    director:  [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Calificaciones',page:'calificaciones'},{label:'Sanciones',page:'inicio'},{label:'Comunicados',page:'comunicados'}],
+    preceptor: [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Sanciones',page:'inicio'},{label:'Comunicados',page:'comunicados'}],
+    docente:   [{label:'Inicio',page:'inicio'},{label:'Calificaciones',page:'calificaciones'},{label:'Comunicados',page:'comunicados'}],
     familia:   [{label:'Inicio',page:'inicio'}],
     alumno:    [{label:'Inicio',page:'inicio'}],
   };
@@ -541,6 +635,12 @@
     document.getElementById('calif-nombre').textContent = u.nombre + ' ' + u.apellido;
     document.getElementById('calif-sub').textContent = 'Sowell · ' + u.rol.charAt(0).toUpperCase() + u.rol.slice(1);
     inicializarSelectoresCalif();
+
+    // Inicializar comunicados
+    document.getElementById('com-avatar').textContent = iniciales;
+    document.getElementById('com-nombre').textContent = u.nombre + ' ' + u.apellido;
+    document.getElementById('com-sub').textContent = 'Sowell · ' + u.rol.charAt(0).toUpperCase() + u.rol.slice(1);
+    inicializarComunicados();
 
     inicializarFecha();
     inicializarCalendario();
@@ -1030,6 +1130,226 @@
     } finally {
       btn.disabled = false;
       btn.innerHTML = '<i class="ti ti-device-floppy"></i> Guardar calificaciones';
+    }
+  }
+
+  // ============================================================
+  // COMUNICADOS
+  // ============================================================
+
+  let comDestinatariosSeleccionados = []; // emails finales a enviar
+  let comAlumnosCache = [];               // cache de alumnos para búsqueda personal
+  let comAlumnoSeleccionado = null;       // { email, nombre } para envío personal
+
+  function inicializarComunicados() {
+    const u = usuarioActual;
+    const sel = document.getElementById('com-tipo-dest');
+    sel.innerHTML = '<option value="">— Seleccioná —</option>';
+
+    // Opciones según rol
+    if (u.rol === 'director') {
+      sel.innerHTML += '<option value="todas-familias">Todas las familias</option>';
+      sel.innerHTML += '<option value="familias-curso">Familias por curso</option>';
+      sel.innerHTML += '<option value="familia-personal">Familia en forma personal</option>';
+      sel.innerHTML += '<option value="todos-docentes">Todo el personal docente</option>';
+    } else if (u.rol === 'preceptor') {
+      sel.innerHTML += '<option value="familias-curso">Familias de mis cursos</option>';
+      sel.innerHTML += '<option value="familia-personal">Familia en forma personal</option>';
+    } else if (u.rol === 'docente') {
+      sel.innerHTML += '<option value="familia-personal">Familia en forma personal</option>';
+    }
+
+    // Cargar cursos disponibles en el selector de cursos
+    const selCurso = document.getElementById('com-sel-curso');
+    selCurso.innerHTML = '<option value="">— Todos los cursos —</option>';
+    let cursos = u.rol === 'director' ? TODOS_LOS_CURSOS :
+      (u.cursos ? String(u.cursos).split(',').map(c => {
+        const p = c.trim().split(':');
+        return normalizarCurso(p.length > 1 ? p[1].trim() : p[0].trim());
+      }).filter((v,i,a) => a.indexOf(v)===i) : []);
+    cursos.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      selCurso.appendChild(opt);
+    });
+
+    cargarHistorialComunicados();
+  }
+
+  function onTipoDestChange() {
+    const tipo = document.getElementById('com-tipo-dest').value;
+    const cursowrap = document.getElementById('com-campo-curso-wrap');
+    const alumnowrap = document.getElementById('com-campo-alumno-wrap');
+    const preview = document.getElementById('com-preview');
+
+    cursowrap.style.display = 'none';
+    alumnowrap.style.display = 'none';
+    comAlumnoSeleccionado = null;
+    comDestinatariosSeleccionados = [];
+
+    if (tipo === 'todas-familias') {
+      actualizarPreviewCom('Todas las familias del colegio');
+    } else if (tipo === 'todos-docentes') {
+      actualizarPreviewCom('Todo el personal docente');
+    } else if (tipo === 'familias-curso') {
+      cursowrap.style.display = 'block';
+      onCursoComChange();
+    } else if (tipo === 'familia-personal') {
+      alumnowrap.style.display = 'block';
+      actualizarPreviewCom('Seleccioná un alumno para ver la familia');
+    } else {
+      preview.style.display = 'none';
+    }
+  }
+
+  function onCursoComChange() {
+    const curso = document.getElementById('com-sel-curso').value;
+    if (curso) {
+      actualizarPreviewCom('Familias del curso ' + curso);
+    } else {
+      actualizarPreviewCom('Familias de todos los cursos');
+    }
+  }
+
+  function actualizarPreviewCom(texto) {
+    const preview = document.getElementById('com-preview');
+    document.getElementById('com-preview-texto').textContent = texto;
+    preview.style.display = 'block';
+  }
+
+  async function buscarAlumnoComm(query) {
+    const cont = document.getElementById('com-resultados-alumno');
+    if (query.length < 2) { cont.innerHTML = ''; return; }
+
+    // Si no tenemos cache de alumnos, los cargamos todos
+    if (comAlumnosCache.length === 0) {
+      // Cargar todos los cursos disponibles
+      const u = usuarioActual;
+      const cursos = u.rol === 'director' ? TODOS_LOS_CURSOS :
+        (u.cursos ? String(u.cursos).split(',').map(c => {
+          const p = c.trim().split(':');
+          return normalizarCurso(p.length > 1 ? p[1].trim() : p[0].trim());
+        }).filter((v,i,a) => a.indexOf(v)===i) : []);
+
+      const resultados = await Promise.all(
+        cursos.map(c => fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ accion:'getAlumnosPorCurso', curso: c }) }).then(r=>r.json()).then(d => (d.datos||[]).map(a=>({...a, curso:c}))))
+      );
+      comAlumnosCache = resultados.flat();
+    }
+
+    const q = query.toLowerCase();
+    const encontrados = comAlumnosCache.filter(a =>
+      a.apellido.toLowerCase().includes(q) || a.nombre.toLowerCase().includes(q)
+    ).slice(0, 8);
+
+    if (encontrados.length === 0) {
+      cont.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:6px 0">No se encontraron alumnos</div>';
+      return;
+    }
+
+    cont.innerHTML = encontrados.map(a =>
+      '<div onclick="seleccionarAlumnoComm(\'' + a.id + '\',\'' + (a.apellido+', '+a.nombre).replace(/'/g,"\\'") + '\',\'' + a.curso + '\')" style="padding:8px 10px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:4px;cursor:pointer;font-size:13px;display:flex;justify-content:space-between;align-items:center" onmouseover="this.style.background=\'var(--navy-light)\'" onmouseout="this.style.background=\'var(--surface)\'">' +
+        '<span>' + a.apellido + ', ' + a.nombre + '</span>' +
+        '<span style="font-size:11px;color:var(--text3)">' + a.curso + '</span>' +
+      '</div>'
+    ).join('');
+  }
+
+  function seleccionarAlumnoComm(id, nombre, curso) {
+    comAlumnoSeleccionado = { id, nombre, curso };
+    document.getElementById('com-buscar-alumno').value = nombre;
+    document.getElementById('com-resultados-alumno').innerHTML = '';
+    // Construir email de la familia: apellido.nombre.fam@sowell.edu.ar
+    const alumno = comAlumnosCache.find(a => String(a.id) === String(id));
+    if (alumno) {
+      const emailFam = (alumno.apellido + '.' + alumno.nombre + '.fam@sowell.edu.ar').toLowerCase().replace(/\s+/g,'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      comAlumnoSeleccionado.emailFam = emailFam;
+      actualizarPreviewCom('Familia de ' + nombre + ' · ' + emailFam);
+    }
+  }
+
+  async function enviarComunicado() {
+    const tipo = document.getElementById('com-tipo-dest').value;
+    const asunto = document.getElementById('com-asunto').value.trim();
+    const cuerpo = document.getElementById('com-cuerpo').value.trim();
+
+    if (!tipo) { mostrarToast('Seleccioná el tipo de destinatario', 'error'); return; }
+    if (!asunto) { mostrarToast('El asunto no puede estar vacío', 'error'); return; }
+    if (!cuerpo) { mostrarToast('El mensaje no puede estar vacío', 'error'); return; }
+    if (tipo === 'familia-personal' && !comAlumnoSeleccionado) { mostrarToast('Buscá y seleccioná un alumno', 'error'); return; }
+
+    const curso = document.getElementById('com-sel-curso').value;
+    const btn = document.getElementById('btn-enviar-com');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ti ti-loader"></i> Enviando...';
+
+    const payload = {
+      accion: 'enviarComunicado',
+      tipo,
+      curso: curso || null,
+      alumnoId: comAlumnoSeleccionado ? comAlumnoSeleccionado.id : null,
+      emailPersonal: comAlumnoSeleccionado ? comAlumnoSeleccionado.emailFam : null,
+      asunto,
+      cuerpo,
+      autor: usuarioActual.nombre + ' ' + usuarioActual.apellido,
+      emailAutor: usuarioActual.email,
+      fecha: new Date().toISOString().split('T')[0]
+    };
+
+    try {
+      const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (data.ok) {
+        mostrarToast('Comunicado enviado correctamente ✓', 'ok');
+        // Limpiar formulario
+        document.getElementById('com-tipo-dest').value = '';
+        document.getElementById('com-asunto').value = '';
+        document.getElementById('com-cuerpo').value = '';
+        document.getElementById('com-buscar-alumno').value = '';
+        document.getElementById('com-campo-alumno-wrap').style.display = 'none';
+        document.getElementById('com-campo-curso-wrap').style.display = 'none';
+        document.getElementById('com-preview').style.display = 'none';
+        comAlumnoSeleccionado = null;
+        cargarHistorialComunicados();
+      } else {
+        mostrarToast('Error: ' + data.mensaje, 'error');
+      }
+    } catch(err) {
+      mostrarToast('Error de conexión. Intentá de nuevo.', 'error');
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ti ti-send"></i> Enviar comunicado';
+    }
+  }
+
+  async function cargarHistorialComunicados() {
+    const cont = document.getElementById('com-historial');
+    cont.innerHTML = '<div class="cargando">Cargando historial...</div>';
+    try {
+      const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ accion: 'getComunicados', emailAutor: usuarioActual.rol === 'director' ? null : usuarioActual.email }) });
+      const data = await res.json();
+      if (!data.ok || !data.datos || data.datos.length === 0) {
+        cont.innerHTML = '<div class="cargando">No hay comunicados enviados todavía</div>';
+        return;
+      }
+      cont.innerHTML = '<div class="com-historial-header">Últimos comunicados</div>' +
+        data.datos.slice(0,20).map(c => {
+          const badgeClass = c.destinatarios && c.destinatarios.includes('docente') ? 'com-badge-docentes' : c.destinatarios && c.destinatarios.includes('personal') ? 'com-badge-personal' : 'com-badge-familias';
+          return '<div class="com-item">' +
+            '<div class="com-item-header">' +
+              '<span class="com-item-titulo">' + (c.titulo||'Sin asunto') + '</span>' +
+              '<div style="display:flex;gap:6px;align-items:center">' +
+                '<span class="com-badge ' + badgeClass + '">' + (c.destinatarios||'—') + '</span>' +
+                '<span class="com-item-meta">' + (c.fecha||'') + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="com-item-cuerpo">' + (c.cuerpo||'').substring(0,180) + (c.cuerpo && c.cuerpo.length > 180 ? '...' : '') + '</div>' +
+            '<div style="font-size:11px;color:var(--text3);margin-top:4px">Enviado por ' + (c.autor||'—') + (c.curso ? ' · Curso: ' + c.curso : '') + '</div>' +
+          '</div>';
+        }).join('');
+    } catch(err) {
+      cont.innerHTML = '<div class="cargando" style="color:var(--red)">Error al cargar historial</div>';
     }
   }
 </script>
