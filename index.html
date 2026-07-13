@@ -807,8 +807,59 @@
   }
 
   // ============================================================
-  // CALIFICACIONES
+  // REPORTE DE INASISTENCIAS — descarga Excel
   // ============================================================
+  async function descargarReporteInasistencias() {
+    const btn = document.getElementById('btn-reporte');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ti ti-loader"></i> Generando...';
+
+    try {
+      const curso = document.getElementById('sel-curso').value || null;
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          accion: 'generarReporteInasistencias',
+          curso: curso
+        })
+      });
+      const data = await res.json();
+
+      if (!data.ok || !data.datos || !data.datos.base64) {
+        mostrarToast('Error al generar el reporte: ' + (data.mensaje || 'sin datos'), 'error');
+        return;
+      }
+
+      // Convertir base64 a blob y disparar descarga
+      const byteChars = atob(data.datos.base64);
+      const byteNums = new Array(byteChars.length);
+      for (let i = 0; i < byteChars.length; i++) {
+        byteNums[i] = byteChars.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNums);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = data.datos.nombreArchivo || 'Inasistencias_Sowell.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      mostrarToast('Reporte descargado correctamente ✓', 'ok');
+
+    } catch(err) {
+      mostrarToast('Error de conexión. Intentá de nuevo.', 'error');
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ti ti-file-spreadsheet"></i> Reporte inasistencias';
+    }
+  }
 
   // Mapa completo de materias por curso (espeja el Apps Script)
   const MATERIAS_POR_CURSO = {
