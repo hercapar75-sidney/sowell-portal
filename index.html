@@ -188,6 +188,11 @@
     .com-badge-familias { background: var(--green-light); color: var(--green-dark); }
     .com-badge-docentes { background: var(--blue-light); color: #0C447C; }
     .com-badge-personal { background: var(--purple-light); color: #26215C; }
+    /* SANCIONES */
+    .sanc-badge-leve { background: var(--blue-light); color: #0C447C; }
+    .sanc-badge-moderada { background: var(--amber-light); color: var(--amber-dark); }
+    .sanc-badge-grave { background: var(--red-light); color: #501313; }
+    .sanc-badge-otra { background: var(--purple-light); color: #26215C; }
     @media (max-width: 720px) {
       .topbar-nav { display: none; }
       .content { grid-template-columns: 1fr; padding: 16px; }
@@ -320,9 +325,9 @@
         </div>
         <p class="section-title">Acciones rápidas</p>
         <div class="quick-actions">
-          <button class="qa-btn" onclick="showPage('asistencia',document.querySelectorAll('.nav-item')[1])"><i class="ti ti-clipboard-check"></i> Asistencia</button>
-          <button class="qa-btn"><i class="ti ti-speakerphone"></i> Comunicado</button>
-          <button class="qa-btn"><i class="ti ti-alert-triangle"></i> Sanción</button>
+          <button class="qa-btn" onclick="irAPagina('asistencia')"><i class="ti ti-clipboard-check"></i> Asistencia</button>
+          <button class="qa-btn" onclick="irAPagina('comunicados')"><i class="ti ti-speakerphone"></i> Comunicado</button>
+          <button class="qa-btn" onclick="irAPagina('sanciones')"><i class="ti ti-alert-triangle"></i> Sanción</button>
           <button class="qa-btn"><i class="ti ti-file-text"></i> Documentos</button>
         </div>
       </div>
@@ -422,6 +427,85 @@
 
 <div class="toast" id="toast"></div>
 
+  <!-- SANCIONES -->
+  <div id="page-sanciones" class="page">
+    <div class="modulo-wrap">
+      <div class="modulo-topbar">
+        <div style="display:flex;align-items:center;gap:10px">
+          <i class="ti ti-alert-triangle" style="color:#fff;font-size:20px"></i>
+          <div><div class="modulo-title">Sanciones</div><div class="modulo-sub" id="sanc-sub">Sowell · Secundaria</div></div>
+        </div>
+        <div class="user-pill" style="cursor:default">
+          <div class="user-avatar" id="sanc-avatar">?</div>
+          <span class="user-name" id="sanc-nombre">Cargando...</span>
+        </div>
+      </div>
+
+      <!-- FORMULARIO -->
+      <div class="com-form">
+        <p class="section-title" style="margin-bottom:14px">Nueva sanción</p>
+
+        <div class="com-field">
+          <label class="com-label">Alumno (búsqueda)</label>
+          <input class="com-input" type="text" id="sanc-buscar-alumno" placeholder="Escribí apellido o nombre..." oninput="buscarAlumnoSancion(this.value)">
+          <div id="sanc-resultados-alumno" style="margin-top:6px"></div>
+        </div>
+
+        <div class="com-preview" id="sanc-preview" style="display:none">
+          <strong>Alumno seleccionado</strong>
+          <span id="sanc-preview-texto">—</span>
+        </div>
+
+        <div class="com-dest-grid" style="margin-bottom:14px">
+          <div class="com-field" style="margin-bottom:0">
+            <label class="com-label">Tipo de sanción</label>
+            <select class="com-select" id="sanc-tipo">
+              <option value="">— Seleccioná —</option>
+              <option value="Llamado de atención">Llamado de atención</option>
+              <option value="Amonestación">Amonestación</option>
+              <option value="Suspensión">Suspensión</option>
+              <option value="Otra">Otra</option>
+            </select>
+          </div>
+          <div class="com-field" style="margin-bottom:0">
+            <label class="com-label">Fecha</label>
+            <input class="com-input" type="date" id="sanc-fecha">
+          </div>
+        </div>
+
+        <div class="com-field">
+          <label class="com-label">Motivo</label>
+          <textarea class="com-textarea" id="sanc-motivo" placeholder="Describí el motivo de la sanción..." style="min-height:90px"></textarea>
+        </div>
+
+        <div class="com-field">
+          <label class="com-label">¿Familia notificada?</label>
+          <select class="com-select" id="sanc-notificado" style="max-width:220px">
+            <option value="NO">No, todavía</option>
+            <option value="SI">Sí, ya fue notificada</option>
+          </select>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end">
+          <button class="btn-guardar" id="btn-guardar-sanc" onclick="guardarSancion()">
+            <i class="ti ti-device-floppy"></i> Registrar sanción
+          </button>
+        </div>
+      </div>
+
+      <!-- HISTORIAL -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;flex-wrap:wrap">
+        <p class="section-title" style="margin-bottom:0">Sanciones registradas</p>
+        <select class="com-select" id="sanc-sel-curso-filtro" style="max-width:170px" onchange="cargarHistorialSanciones()">
+          <option value="">Todos mis cursos</option>
+        </select>
+      </div>
+      <div class="com-historial" id="sanc-historial">
+        <div class="cargando">Cargando historial...</div>
+      </div>
+    </div>
+  </div>
+
   <!-- COMUNICADOS -->
   <div id="page-comunicados" class="page">
     <div class="modulo-wrap">
@@ -502,8 +586,8 @@
   const TODOS_LOS_CURSOS = ['1° A','1° B','1° C','2° A','2° B','2° C','3° A','3° B','3° C','4° A','4° B','4° C','5° A','5° B','5° C','6° A','6° B','6° C'];
 
   const NAV_POR_ROL = {
-    director:  [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Calificaciones',page:'calificaciones'},{label:'Sanciones',page:'inicio'},{label:'Comunicados',page:'comunicados'}],
-    preceptor: [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Sanciones',page:'inicio'},{label:'Comunicados',page:'comunicados'}],
+    director:  [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Calificaciones',page:'calificaciones'},{label:'Sanciones',page:'sanciones'},{label:'Comunicados',page:'comunicados'}],
+    preceptor: [{label:'Inicio',page:'inicio'},{label:'Asistencia',page:'asistencia'},{label:'Sanciones',page:'sanciones'},{label:'Comunicados',page:'comunicados'}],
     docente:   [{label:'Inicio',page:'inicio'},{label:'Calificaciones',page:'calificaciones'},{label:'Comunicados',page:'comunicados'}],
     familia:   [{label:'Inicio',page:'inicio'}],
     alumno:    [{label:'Inicio',page:'inicio'}],
@@ -642,6 +726,12 @@
     document.getElementById('com-sub').textContent = 'Sowell · ' + u.rol.charAt(0).toUpperCase() + u.rol.slice(1);
     inicializarComunicados();
 
+    // Inicializar sanciones
+    document.getElementById('sanc-avatar').textContent = iniciales;
+    document.getElementById('sanc-nombre').textContent = u.nombre + ' ' + u.apellido;
+    document.getElementById('sanc-sub').textContent = 'Sowell · ' + u.rol.charAt(0).toUpperCase() + u.rol.slice(1);
+    inicializarSanciones();
+
     inicializarFecha();
     inicializarCalendario();
   }
@@ -669,6 +759,19 @@
       const curso = document.getElementById('sel-curso').value;
       if (curso) cargarAlumnos(curso);
     }
+    if (id === 'sanciones') {
+      cargarHistorialSanciones();
+    }
+  }
+
+  // Navega a una página buscando su botón correspondiente en el nav
+  // del rol actual (usado por los accesos rápidos de Inicio).
+  function irAPagina(pageId) {
+    const items = NAV_POR_ROL[usuarioActual.rol] || NAV_POR_ROL.alumno;
+    const idx = items.findIndex(it => it.page === pageId);
+    if (idx === -1) { mostrarToast('No tenés acceso a esta sección', 'error'); return; }
+    const btns = document.querySelectorAll('.nav-item');
+    showPage(pageId, btns[idx]);
   }
 
   // ============================================================
@@ -1397,6 +1500,168 @@
             '</div>' +
             '<div class="com-item-cuerpo">' + (c.cuerpo||'').substring(0,180) + (c.cuerpo && c.cuerpo.length > 180 ? '...' : '') + '</div>' +
             '<div style="font-size:11px;color:var(--text3);margin-top:4px">Enviado por ' + (c.autor||'—') + (c.curso ? ' · Curso: ' + c.curso : '') + '</div>' +
+          '</div>';
+        }).join('');
+    } catch(err) {
+      cont.innerHTML = '<div class="cargando" style="color:var(--red)">Error al cargar historial</div>';
+    }
+  }
+
+  // ============================================================
+  // SANCIONES
+  // ============================================================
+  let sancAlumnosCache = [];        // cache de alumnos para búsqueda
+  let sancAlumnoSeleccionado = null; // { id, nombre, curso }
+
+  // Devuelve la lista de cursos visibles para el usuario actual,
+  // extrayendo el curso de docentes con formato "Materia:Curso"
+  // (mismo criterio que Calificaciones y Comunicados).
+  function obtenerCursosSanciones() {
+    const u = usuarioActual;
+    if (u.rol === 'director') return TODOS_LOS_CURSOS;
+    if (!u.cursos) return [];
+    return String(u.cursos).split(',').map(c => {
+      const p = c.trim().split(':');
+      return normalizarCurso(p.length > 1 ? p[1].trim() : p[0].trim());
+    }).filter((v,i,a) => a.indexOf(v) === i);
+  }
+
+  function inicializarSanciones() {
+    document.getElementById('sanc-fecha').value = new Date().toISOString().split('T')[0];
+
+    const selFiltro = document.getElementById('sanc-sel-curso-filtro');
+    selFiltro.innerHTML = '<option value="">Todos mis cursos</option>';
+    obtenerCursosSanciones().forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      selFiltro.appendChild(opt);
+    });
+
+    sancAlumnosCache = [];
+    sancAlumnoSeleccionado = null;
+    cargarHistorialSanciones();
+  }
+
+  async function buscarAlumnoSancion(query) {
+    const cont = document.getElementById('sanc-resultados-alumno');
+    if (query.length < 2) { cont.innerHTML = ''; return; }
+
+    if (sancAlumnosCache.length === 0) {
+      const cursos = obtenerCursosSanciones();
+      const resultados = await Promise.all(
+        cursos.map(c => fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ accion:'getAlumnosPorCurso', curso: c }) }).then(r=>r.json()).then(d => (d.datos||[]).map(a=>({...a, curso:c}))))
+      );
+      sancAlumnosCache = resultados.flat();
+    }
+
+    const q = query.toLowerCase();
+    const encontrados = sancAlumnosCache.filter(a =>
+      a.apellido.toLowerCase().includes(q) || a.nombre.toLowerCase().includes(q)
+    ).slice(0, 8);
+
+    if (encontrados.length === 0) {
+      cont.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:6px 0">No se encontraron alumnos</div>';
+      return;
+    }
+
+    cont.innerHTML = encontrados.map(a =>
+      '<div style="display:flex;justify-content:space-between;padding:7px 10px;border:0.5px solid var(--border);border-radius:8px;margin-bottom:4px;cursor:pointer;font-size:12px" onclick="seleccionarAlumnoSancion(\'' + a.id + '\',\'' + (a.apellido + ', ' + a.nombre).replace(/'/g,"\\'") + '\',\'' + a.curso + '\')">' +
+        '<span>' + a.apellido + ', ' + a.nombre + '</span>' +
+        '<span style="font-size:11px;color:var(--text3)">' + a.curso + '</span>' +
+      '</div>'
+    ).join('');
+  }
+
+  function seleccionarAlumnoSancion(id, nombre, curso) {
+    sancAlumnoSeleccionado = { id, nombre, curso };
+    document.getElementById('sanc-buscar-alumno').value = nombre;
+    document.getElementById('sanc-resultados-alumno').innerHTML = '';
+    document.getElementById('sanc-preview').style.display = 'block';
+    document.getElementById('sanc-preview-texto').textContent = nombre + ' · ' + curso;
+  }
+
+  function claseSancion(tipo) {
+    if (tipo === 'Llamado de atención') return 'sanc-badge-leve';
+    if (tipo === 'Amonestación') return 'sanc-badge-moderada';
+    if (tipo === 'Suspensión') return 'sanc-badge-grave';
+    return 'sanc-badge-otra';
+  }
+
+  async function guardarSancion() {
+    if (!sancAlumnoSeleccionado) { mostrarToast('Buscá y seleccioná un alumno', 'error'); return; }
+    const tipo = document.getElementById('sanc-tipo').value;
+    const motivo = document.getElementById('sanc-motivo').value.trim();
+    const fecha = document.getElementById('sanc-fecha').value;
+    const notificado = document.getElementById('sanc-notificado').value;
+
+    if (!tipo) { mostrarToast('Seleccioná el tipo de sanción', 'error'); return; }
+    if (!motivo) { mostrarToast('Describí el motivo', 'error'); return; }
+    if (!fecha) { mostrarToast('Seleccioná una fecha', 'error'); return; }
+
+    const btn = document.getElementById('btn-guardar-sanc');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ti ti-loader"></i> Guardando...';
+
+    const payload = {
+      accion: 'guardarSancion',
+      id_alumno: sancAlumnoSeleccionado.id,
+      alumno_nombre: sancAlumnoSeleccionado.nombre,
+      curso: sancAlumnoSeleccionado.curso,
+      tipo,
+      motivo,
+      fecha,
+      registrado_por: usuarioActual.nombre + ' ' + usuarioActual.apellido,
+      notificado,
+      observacion: ''
+    };
+
+    try {
+      const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+      const data = await res.json();
+      if (data.ok) {
+        mostrarToast('Sanción registrada correctamente ✓', 'ok');
+        document.getElementById('sanc-buscar-alumno').value = '';
+        document.getElementById('sanc-tipo').value = '';
+        document.getElementById('sanc-motivo').value = '';
+        document.getElementById('sanc-notificado').value = 'NO';
+        document.getElementById('sanc-preview').style.display = 'none';
+        sancAlumnoSeleccionado = null;
+        cargarHistorialSanciones();
+      } else {
+        mostrarToast('Error: ' + data.mensaje, 'error');
+      }
+    } catch(err) {
+      mostrarToast('Error de conexión. Intentá de nuevo.', 'error');
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ti ti-device-floppy"></i> Registrar sanción';
+    }
+  }
+
+  async function cargarHistorialSanciones() {
+    const cont = document.getElementById('sanc-historial');
+    cont.innerHTML = '<div class="cargando">Cargando historial...</div>';
+    const curso = document.getElementById('sanc-sel-curso-filtro').value;
+    try {
+      const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ accion: 'getSancionesPorCurso', curso: curso || null }) });
+      const data = await res.json();
+      if (!data.ok || !data.datos || data.datos.length === 0) {
+        cont.innerHTML = '<div class="cargando">No hay sanciones registradas todavía</div>';
+        return;
+      }
+      cont.innerHTML = '<div class="com-historial-header">Últimas sanciones</div>' +
+        data.datos.slice(0,30).map(s => {
+          return '<div class="com-item">' +
+            '<div class="com-item-header">' +
+              '<span class="com-item-titulo">' + (s.alumno_nombre || 'Alumno') + ' · ' + (s.curso || '') + '</span>' +
+              '<div style="display:flex;gap:6px;align-items:center">' +
+                '<span class="com-badge ' + claseSancion(s.tipo) + '">' + (s.tipo || '—') + '</span>' +
+                '<span class="com-item-meta">' + (s.fecha || '') + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="com-item-cuerpo">' + (s.motivo || '') + '</div>' +
+            '<div style="font-size:11px;color:var(--text3);margin-top:4px">Registrado por ' + (s.registrado_por || '—') + ' · Familia notificada: ' + (s.notificado || 'NO') + '</div>' +
           '</div>';
         }).join('');
     } catch(err) {
